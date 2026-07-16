@@ -32,7 +32,7 @@ interface UserPanelProps {
   onUpdateUser: (updatedUser: User) => void;
 }
 
-export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }: UserPanelProps) {
+export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps) {
   const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'spin' | 'friends' | 'wallet' | 'ranks'>('home');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<BotNotification[]>([]);
