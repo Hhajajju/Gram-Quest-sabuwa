@@ -30,7 +30,6 @@ import { User, Task, Referral, Withdrawal, SpinHistory, AppSettings } from '../t
 interface UserPanelProps {
   currentUser: User;
   onUpdateUser: (updatedUser: User) => void;
-  onSwitchToAdmin: () => void;
 }
 
 export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }: UserPanelProps) {
