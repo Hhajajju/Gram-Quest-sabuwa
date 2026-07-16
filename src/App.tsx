@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import UserPanel from './components/UserPanel';
-import AdminPanel from './components/AdminPanel';
 import { GramQuestDB } from './database';
 import { User } from './types';
 import { User as UserIcon, RefreshCw, HelpCircle, Users } from 'lucide-react';
 
 export default function App() {
-  const [isAdminMode, setIsAdminMode] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Simulation Controls for Testing inside AI Studio preview
@@ -142,17 +140,10 @@ export default function App() {
       </div>
 
       {/* Main Container Router */}
-      {isAdminMode ? (
-        <AdminPanel 
-          onSwitchToUser={() => setIsAdminMode(false)}
-        />
-      ) : (
-        <UserPanel 
-          currentUser={currentUser}
-          onUpdateUser={handleUpdateUser}
-          onSwitchToAdmin={() => setIsAdminMode(true)}
-        />
-      )}
+      <UserPanel 
+  currentUser={currentUser}
+  onUpdateUser={handleUpdateUser}
+/>
 
       {/* DEV IDENTITY EMULATOR MODAL */}
       {showIdentityModal && (
