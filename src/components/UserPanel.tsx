@@ -356,21 +356,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0b0f19] text-white' : 'bg-gray-50 text-gray-900'} pb-24 font-sans transition-colors duration-300`}>
       
-      {/* Simulation Banner / Fast Tester Panel */}
-      <div className="bg-gradient-to-r from-blue-700 to-[#1253a4] px-4 py-2 flex flex-col sm:flex-row justify-between items-center text-xs text-white shadow-md space-y-2 sm:space-y-0">
-        <div className="flex items-center space-x-2">
-          <span className="bg-yellow-400 text-black px-2 py-0.5 rounded font-bold">LIVE TELEGRAM SDK MODE</span>
-          <span className="opacity-90">Simulated identity connected: ID: <b>{currentUser.telegramId}</b></span>
-        </div>
-        <div className="flex items-center space-x-3">
-          <button 
-            onClick={onSwitchToAdmin}
-            className="bg-black/40 hover:bg-black/60 text-white px-3 py-1 rounded-full font-semibold flex items-center transition-all border border-white/20"
-          >
-            🛠️ Admin Panel Dashboard
-          </button>
-        </div>
-      </div>
+    
 
       {/* Main Header */}
       <header className={`px-4 pt-5 pb-4 flex justify-between items-center ${theme === 'dark' ? 'bg-[#101726]/60 border-b border-gray-800' : 'bg-white border-b border-gray-200'} sticky top-0 z-40 backdrop-blur-md`}>
