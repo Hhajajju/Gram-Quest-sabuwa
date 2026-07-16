@@ -1,0 +1,6 @@
+{
+  "name": "Gram Quest",
+  "description": "A Telegram Mini App where users complete tasks, spin the wheel, and refer friends to earn Coins and convert them to Gram.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
