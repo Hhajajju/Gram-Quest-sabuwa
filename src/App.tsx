@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UserPanel from './components/UserPanel';
 import { GramQuestDB } from './database';
 import { User } from './types';
-import { User as UserIcon, RefreshCw, HelpCircle, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
