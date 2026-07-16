@@ -4,10 +4,135 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gram Quest — Telegram Mini App</title>
+    <script>
+      // 1. Pre-emptively modify init params in location.hash and window.name to report version 8.0 before Telegram SDK loads
+      try {
+        var hash = window.location.hash;
+        if (hash) {
+          if (hash.indexOf('tgWebAppVersion=') !== -1) {
+            hash = hash.replace(/tgWebAppVersion=[^&]+/, 'tgWebAppVersion=8.0');
+          } else {
+            hash += '&tgWebAppVersion=8.0';
+          }
+          window.history.replaceState(null, '', window.location.pathname + window.location.search + hash);
+        } else {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search + '#tgWebAppVersion=8.0');
+        }
+      } catch (e) {}
+
+      try {
+        if (window.name && window.name.indexOf('tgWebAppVersion=') !== -1) {
+          window.name = window.name.replace(/tgWebAppVersion=[^&]+/, 'tgWebAppVersion=8.0');
+        } else if (window.name) {
+          window.name += '&tgWebAppVersion=8.0';
+        } else {
+          window.name = 'tgWebAppVersion=8.0';
+        }
+      } catch (e) {}
+
+      // 2. Pre-define window.Telegram structure to force version 8.0 and mock CloudStorage
+      var cloudStorageMock = {
+        setItem: function(key, value, callback) {
+          try {
+            localStorage.setItem('tg_cloud_' + key, value);
+            if (callback) callback(null, true);
+          } catch (err) {
+            if (callback) callback(err, false);
+          }
+        },
+        getItem: function(key, callback) {
+          try {
+            var val = localStorage.getItem('tg_cloud_' + key);
+            if (callback) callback(null, val);
+          } catch (err) {
+            if (callback) callback(err, null);
+          }
+        },
+        getItems: function(keys, callback) {
+          try {
+            var res = {};
+            for (var i = 0; i < keys.length; i++) {
+              res[keys[i]] = localStorage.getItem('tg_cloud_' + keys[i]);
+            }
+            if (callback) callback(null, res);
+          } catch (err) {
+            if (callback) callback(err, null);
+          }
+        },
+        removeItem: function(key, callback) {
+          try {
+            localStorage.removeItem('tg_cloud_' + key);
+            if (callback) callback(null, true);
+          } catch (err) {
+            if (callback) callback(err, false);
+          }
+        },
+        removeItems: function(keys, callback) {
+          try {
+            for (var i = 0; i < keys.length; i++) {
+              localStorage.removeItem('tg_cloud_' + keys[i]);
+            }
+            if (callback) callback(null, true);
+          } catch (err) {
+            if (callback) callback(err, false);
+          }
+        },
+        getKeys: function(callback) {
+          try {
+            var keys = [];
+            for (var i = 0; i < localStorage.length; i++) {
+              var k = localStorage.key(i);
+              if (k && k.indexOf('tg_cloud_') === 0) {
+                keys.push(k.substring(9));
+              }
+            }
+            if (callback) callback(null, keys);
+          } catch (err) {
+            if (callback) callback(err, null);
+          }
+        }
+      };
+
+      window.Telegram = window.Telegram || {};
+      window.Telegram.WebApp = window.Telegram.WebApp || {};
+      window.Telegram.WebApp.version = '8.0';
+      window.Telegram.WebApp.isVersionAtLeast = function() { return true; };
+      window.Telegram.WebApp.CloudStorage = cloudStorageMock;
+    </script>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      // 3. Post-load enforcement patch to ensure loaded SDK respects mock properties and forced version
+      if (window.Telegram && window.Telegram.WebApp) {
+        try {
+          window.Telegram.WebApp.isVersionAtLeast = function() { return true; };
+        } catch (e) {}
+
+        try {
+          Object.defineProperty(window.Telegram.WebApp, 'version', {
+            get: function() { return '8.0'; },
+            set: function() {},
+            configurable: true
+          });
+        } catch (e) {
+          window.Telegram.WebApp.version = '8.0';
+        }
+
+        try {
+          Object.defineProperty(window.Telegram.WebApp, 'CloudStorage', {
+            value: cloudStorageMock,
+            writable: true,
+            configurable: true
+          });
+        } catch (e) {
+          window.Telegram.WebApp.CloudStorage = cloudStorageMock;
+        }
+      }
+    </script>
     <!-- Adsgram Task SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <!-- Gigapubs Ads SDK -->
+    <script src="https://ad.gigapub.tech/script?id=7266"></script>
   </head>
   <body class="bg-[#0b0f19] text-white">
     <div id="root"></div>

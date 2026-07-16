@@ -49,6 +49,7 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
   const [spinResult, setSpinResult] = useState<number | null>(null);
   const [spinAngle, setSpinAngle] = useState(0);
   const [claimableSpinReward, setClaimableSpinReward] = useState<number | null>(null);
+  const [isSpinAdCompleted, setIsSpinAdCompleted] = useState(false);
   const [showAdOverlay, setShowAdOverlay] = useState(false);
   const [spinHistory, setSpinHistory] = useState<SpinHistory[]>([]);
 
@@ -237,6 +238,7 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
     if (isSpinning) return;
     setIsSpinning(true);
     setClaimableSpinReward(null);
+    setIsSpinAdCompleted(false);
 
     const res = GramQuestDB.spinWheel(currentUser.telegramId);
     if (res.success) {
@@ -246,9 +248,8 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
       const rewardsMap = [100, 500, 1000, 2000, 3000];
       const index = rewardsMap.indexOf(res.reward);
       // Each segment is 72 degrees (360 / 5)
-      // Angle target is multiple of 360 + segment angle offset
-      const segmentAngle = 360 / rewardsMap.length;
-      const targetAngle = 3600 + (index * segmentAngle) + (segmentAngle / 2);
+      // To make segment centered perfectly at pointer on land:
+      const targetAngle = 3600 + (360 - (index * 72 + 36));
 
       setSpinAngle(targetAngle);
       setSpinResult(res.reward);
@@ -263,19 +264,42 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
     }
   };
 
+  const handleWatchSpinAd = () => {
+    if (claimableSpinReward === null) return;
+    setIsVerifying(true);
+
+    if (typeof (window as any).showGiga === 'function') {
+      (window as any).showGiga()
+        .then(() => {
+          setIsVerifying(false);
+          setIsSpinAdCompleted(true);
+          alert("🎉 Gigapubs ad completed successfully! Your claim button is now unlocked.");
+        })
+        .catch((err: any) => {
+          setIsVerifying(false);
+          alert("Advertisement was not fully completed. Please watch the ad entirely to unlock your reward.");
+        });
+    } else {
+      setIsVerifying(false);
+      alert("⚠️ Gigapubs Ads SDK is currently loading or blocked by an adblocker. Please disable your adblocker to watch the ad and claim your coins.");
+    }
+  };
+
   const handleClaimSpinReward = () => {
     if (claimableSpinReward === null) return;
+    if (!isSpinAdCompleted) {
+      alert("Please watch the advertisement to unlock your winnings first.");
+      return;
+    }
     
-    // Simulate Gigapub Ad showing on claim (1 in 2 chance or optional simulation)
-    setShowAdOverlay(true);
-    setTimeout(() => {
-      setShowAdOverlay(false);
-      GramQuestDB.claimSpinReward(currentUser.telegramId, claimableSpinReward);
-      setClaimableSpinReward(null);
-      setSpinResult(null);
-      setSpinAngle(0);
-      refreshData();
-    }, 2500); // 2.5s Gigapub ad duration
+    GramQuestDB.claimSpinReward(currentUser.telegramId, claimableSpinReward);
+    const wonReward = claimableSpinReward;
+    setClaimableSpinReward(null);
+    setSpinResult(null);
+    setSpinAngle(0);
+    setIsSpinAdCompleted(false);
+    refreshData();
+    alert(`🎉 Successfully claimed ${wonReward.toLocaleString()} Coins! Your balance has been updated immediately.`);
   };
 
   // 5. Convert Coins
@@ -712,39 +736,71 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
               {/* Spin wheel visual wrapper */}
               <div className="relative w-72 h-72 my-4">
                 {/* Pointer marker */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 z-20">
-                  <div className="w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[20px] border-t-yellow-500 drop-shadow-md" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/3 z-40">
+                  <div className="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[24px] border-t-yellow-400 drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)]" />
+                  <div className="w-3 h-3 rounded-full bg-white absolute top-[-26px] left-[-6px] shadow-sm animate-ping" />
                 </div>
 
-                {/* Animated Rotating Wheel */}
-                <motion.div 
-                  className="w-full h-full rounded-full border-8 border-gray-850 shadow-2xl relative overflow-hidden bg-gradient-to-tr from-[#121c33] to-[#0a1120]"
-                  style={{ transform: `rotate(${spinAngle}deg)` }}
-                  animate={isSpinning ? {} : { rotate: spinAngle }}
-                  transition={isSpinning ? { duration: 0 } : { type: 'spring', damping: 20 }}
-                >
-                  {/* Wheel segments */}
-                  {[100, 500, 1000, 2000, 3000].map((reward, i) => {
-                    const angle = i * 72;
-                    return (
-                      <div 
-                        key={i}
-                        className="absolute top-0 left-0 w-full h-full origin-center flex flex-col items-center pt-8 text-xs font-black"
-                        style={{ transform: `rotate(${angle}deg)` }}
-                      >
-                        <div className="text-center space-y-1 mt-1 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-md border border-white/5">
-                          <Coins className="w-4 h-4 text-yellow-500 mx-auto" />
-                          <span className="text-yellow-400 text-[10px]">{reward}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                {/* Animated Rotating Wheel with Gold Rim Bulbs */}
+                <div className="w-full h-full rounded-full p-2 bg-[#121824] shadow-[0_10px_30px_rgba(0,0,0,0.6)] relative flex items-center justify-center">
+                  
+                  {/* Outer gold bulbs */}
+                  {[...Array(12)].map((_, idx) => (
+                    <div
+                      key={idx}
+                      className="absolute w-2 h-2 rounded-full bg-yellow-300 shadow-[0_0_8px_#fcd34d] z-30 transition-all duration-300"
+                      style={{
+                        top: '50%',
+                        left: '50%',
+                        transform: `translate(-50%, -50%) rotate(${idx * 30}deg) translateY(-134px)`
+                      }}
+                    />
+                  ))}
 
-                  {/* Centered logo spinner button */}
-                  <div className="absolute inset-0 m-auto w-16 h-16 bg-[#1a253e] rounded-full border-4 border-blue-500 flex items-center justify-center shadow-lg z-10">
-                    <span className="text-[10px] font-black tracking-tighter text-blue-400">QUEST</span>
-                  </div>
-                </motion.div>
+                  <motion.div 
+                    className="w-full h-full rounded-full border-4 border-[#1c2438] relative overflow-hidden ring-2 ring-yellow-400/10 shadow-inner"
+                    style={{ 
+                      background: 'conic-gradient(#3b82f6 0deg 72deg, #10b981 72deg 144deg, #8b5cf6 144deg 216deg, #ec4899 216deg 288deg, #fbbf24 288deg 360deg)',
+                      transform: `rotate(${spinAngle}deg)` 
+                    }}
+                    animate={isSpinning ? {} : { rotate: spinAngle }}
+                    transition={isSpinning ? { duration: 0 } : { type: 'spring', damping: 20 }}
+                  >
+                    {/* Divider lines between segments */}
+                    {[0, 1, 2, 3, 4].map(i => (
+                      <div 
+                        key={i} 
+                        className="absolute top-0 left-1/2 w-0.5 h-1/2 bg-white/20 origin-bottom"
+                        style={{ transform: `translateX(-50%) rotate(${i * 72}deg)` }}
+                      />
+                    ))}
+
+                    {/* Wheel segments */}
+                    {[100, 500, 1000, 2000, 3000].map((reward, i) => {
+                      const angle = i * 72 + 36;
+                      return (
+                        <div 
+                          key={i}
+                          className="absolute top-0 left-0 w-full h-full origin-center flex flex-col items-center pt-6 text-white font-black"
+                          style={{ transform: `rotate(${angle}deg)` }}
+                        >
+                          <div className="text-center space-y-0.5">
+                            <Coins className="w-5 h-5 text-white mx-auto drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.6)]" />
+                            <span className="text-white text-[13px] font-extrabold drop-shadow-[0_1.5px_1.5px_rgba(0,0,0,0.6)] tracking-tight">
+                              {reward}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Centered logo spinner button */}
+                    <div className="absolute inset-0 m-auto w-16 h-16 bg-[#111726] rounded-full border-4 border-yellow-400 flex flex-col items-center justify-center shadow-lg z-10">
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-ping absolute" />
+                      <span className="text-[10px] font-black tracking-tighter text-yellow-400 uppercase">QUEST</span>
+                    </div>
+                  </motion.div>
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -759,19 +815,61 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
                     <span>{isSpinning ? 'SPINNING...' : 'SPIN THE WHEEL NOW'}</span>
                   </button>
                 ) : (
-                  <div className={`p-4 rounded-2xl border text-center space-y-3 ${theme === 'dark' ? 'bg-[#121c35] border-blue-500/30' : 'bg-blue-50 border-blue-200'}`}>
-                    <p className="text-xs opacity-90">Congratulations! You won</p>
-                    <div className="text-3xl font-black text-yellow-500 flex justify-center items-center space-x-1">
+                  <div className={`p-4 rounded-2xl border text-center space-y-4 ${theme === 'dark' ? 'bg-[#121c35] border-blue-500/30' : 'bg-blue-50 border-blue-200'}`}>
+                    <p className="text-xs opacity-90">Congratulations! You landed on</p>
+                    <div className="text-3xl font-black text-yellow-400 flex justify-center items-center space-x-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
                       <span>{claimableSpinReward.toLocaleString()}</span>
-                      <span className="text-sm font-bold">COINS</span>
+                      <span className="text-sm font-bold text-yellow-500">COINS</span>
                     </div>
-                    <p className="text-[10px] opacity-75">Spin Sponsored by Gigapub. Claming reward will trigger a premium partner ad.</p>
-                    <button 
-                      onClick={handleClaimSpinReward}
-                      className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-black text-xs py-2.5 rounded-xl transition-all flex items-center justify-center space-x-2 active:scale-95"
-                    >
-                      <span>CLAIM WINNINGS NOW 🎁</span>
-                    </button>
+                    
+                    <div className="border-t border-dashed border-blue-500/20 pt-3.5 space-y-3.5">
+                      <p className="text-[11px] opacity-75">
+                        This reward is pending. You must watch the Gigapubs advertisement to unlock the Claim Reward button.
+                      </p>
+
+                      <div className="grid grid-cols-1 gap-2.5">
+                        {/* Step 1: Watch Ad Button */}
+                        <button 
+                          onClick={handleWatchSpinAd}
+                          disabled={isSpinAdCompleted || isVerifying}
+                          className={`w-full py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center space-x-1.5 ${
+                            isSpinAdCompleted 
+                              ? 'bg-green-600 text-white cursor-default'
+                              : isVerifying
+                                ? 'bg-blue-600/50 text-white/50 cursor-wait'
+                                : 'bg-blue-600 hover:bg-blue-700 text-white active:scale-95'
+                          }`}
+                        >
+                          {isSpinAdCompleted ? (
+                            <>
+                              <span>✅ GIGAPUBS AD COMPLETED</span>
+                            </>
+                          ) : isVerifying ? (
+                            <>
+                              <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                              <span>WATCHING AD...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>📺 WATCH GIGAPUBS AD TO UNLOCK</span>
+                            </>
+                          )}
+                        </button>
+
+                        {/* Step 2: Claim Reward Button */}
+                        <button 
+                          onClick={handleClaimSpinReward}
+                          disabled={!isSpinAdCompleted}
+                          className={`w-full py-3 rounded-xl font-black text-xs transition-all flex items-center justify-center space-x-1.5 ${
+                            isSpinAdCompleted
+                              ? 'bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black shadow-md scale-[1.01] active:scale-[0.99]'
+                              : 'bg-gray-800 text-gray-500 cursor-not-allowed opacity-60'
+                          }`}
+                        >
+                          <span>{isSpinAdCompleted ? '🎁 CLAIM MY COINS NOW!' : '🔒 CLAIM REWARD (LOCKED)'}</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -836,26 +934,35 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
               </div>
 
               {/* Daily Referral Challenge */}
-              <section className={`p-4 rounded-2xl border ${theme === 'dark' ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-200'} shadow-sm`}>
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-extrabold text-xs flex items-center space-x-1.5">
-                    <span>🔥</span>
-                    <span>Daily Challenge: 10 Verified Refs</span>
-                  </h4>
-                  <span className="text-yellow-500 font-black text-[10px] bg-yellow-500/10 px-2 py-0.2 rounded">
+              <section className={`p-4 rounded-2xl border ${theme === 'dark' ? 'bg-gradient-to-br from-[#10172e] to-[#0d1222] border-gray-800' : 'bg-white border-gray-150'} shadow-md`}>
+                <div className="flex justify-between items-center mb-3">
+                  <div>
+                    <h3 className="font-extrabold text-sm tracking-tight flex items-center space-x-1.5">
+                      <span className="text-yellow-500">🔥</span>
+                      <span>Daily Challenge: 10 Verified Refs</span>
+                    </h3>
+                    <p className={`text-[10px] ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Get verified referrals in 24h to claim</p>
+                  </div>
+                  <span className="bg-yellow-500/10 text-yellow-500 text-[10px] px-2.5 py-0.5 rounded-full font-black">
                     +200,000 COINS
                   </span>
                 </div>
-                <div className="space-y-2 mt-3">
-                  <div className="flex justify-between items-center text-xs">
-                    <span className="opacity-75">Challenge Progress</span>
-                    <span className="font-bold">{dailyReferralCount}/10 Verified Referrals</span>
+
+                {/* Progress bar */}
+                <div className="space-y-2 mt-4">
+                  <div className="flex justify-between items-center text-xs font-bold">
+                    <span className="text-blue-400">Progress</span>
+                    <span className="opacity-80">{dailyReferralCount}/10 Verified Referrals</span>
                   </div>
-                  <div className={`w-full h-2.5 rounded-full ${theme === 'dark' ? 'bg-gray-850' : 'bg-gray-150'} overflow-hidden`}>
+                  <div className={`w-full h-3 rounded-full overflow-hidden ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'}`}>
                     <div 
-                      className="bg-yellow-500 h-full rounded-full transition-all"
+                      className="bg-gradient-to-r from-yellow-500 to-amber-500 h-full rounded-full transition-all duration-500"
                       style={{ width: `${Math.min(100, (dailyReferralCount / 10) * 100)}%` }}
                     />
+                  </div>
+                  <div className="flex justify-between items-center text-[10px] opacity-60">
+                    <span>{Math.round((dailyReferralCount / 10) * 100)}% Completed</span>
+                    <span>Resets every 24h</span>
                   </div>
                 </div>
               </section>
