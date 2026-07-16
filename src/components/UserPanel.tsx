@@ -20,7 +20,8 @@ import {
   User as UserIcon,
   Sun,
   Moon,
-  Clock
+  Clock,
+  CheckSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GramQuestDB, BotNotification } from '../database';
@@ -33,7 +34,7 @@ interface UserPanelProps {
 }
 
 export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }: UserPanelProps) {
-  const [activeTab, setActiveTab] = useState<'home' | 'spin' | 'friends' | 'wallet' | 'ranks'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'spin' | 'friends' | 'wallet' | 'ranks'>('home');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<BotNotification[]>([]);
   const [settings, setSettings] = useState<AppSettings>(GramQuestDB.getSettings());
@@ -41,6 +42,7 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
   const [completedTasksCount, setCompletedTasksCount] = useState(0);
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   
   // Spin Wheel States
   const [isSpinning, setIsSpinning] = useState(false);
@@ -142,10 +144,9 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // 2. Watch Adsgram task or ads
+  // 2. Watch Partner Task specifications
   const handleStartTask = (task: Task) => {
     if (task.url && task.type === 'normal') {
-      // Simulate normal task visit
       window.open(task.url, '_blank');
       setWatchingAd({
         active: true,
@@ -153,31 +154,55 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
         reward: task.reward,
         isAdOnly: false
       });
-      setAdSeconds(5); // 5s simulation
-    } else {
-      // Adsgram Video/Ad Task
-      setWatchingAd({
-        active: true,
-        taskName: task.title,
-        reward: task.reward,
-        isAdOnly: false
-      });
-      setAdSeconds(10); // 10s video ad simulation
+      setAdSeconds(5); // 5s simulation for partner task validation
     }
   };
 
-  const handleWatchAdDirect = () => {
-    // Main Adsgram Ads Banner
-    setWatchingAd({
-      active: true,
-      taskName: 'Watch sponsored Adsgram advertisement',
-      reward: 3500, // Adsgram Ad reward
-      isAdOnly: true
-    });
-    setAdSeconds(8); // 8s video simulation
+  const handleReward = async (event: any) => {
+    const blockId = event.detail || 'task-38284';
+    setIsVerifying(true);
+    try {
+      const res = await GramQuestDB.verifyAdsgramTaskOnBackend(currentUser.telegramId, blockId);
+      if (res.success) {
+        refreshData();
+        alert(`🎉 Reward Confirmed! +${res.reward.toLocaleString()} Coins added to your balance.`);
+      } else {
+        alert(res.message);
+      }
+    } catch (err) {
+      alert('Network error during backend verification.');
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
-  // Simulation timer
+  const handleError = (event: any) => {
+    alert(`Adsgram Task Error: Error during loading or render for block ${event.detail}`);
+  };
+
+  const handleNotFound = (event: any) => {
+    alert('No task available');
+  };
+
+  const handleTooLongSession = () => {
+    alert('The session is too long. Please restart the Telegram Mini App.');
+  };
+
+  const setAdsgramRef = (element: HTMLElement | null) => {
+    if (element) {
+      element.removeEventListener('reward', handleReward);
+      element.removeEventListener('onError', handleError);
+      element.removeEventListener('onBannerNotFound', handleNotFound);
+      element.removeEventListener('onTooLongSession', handleTooLongSession);
+
+      element.addEventListener('reward', handleReward);
+      element.addEventListener('onError', handleError);
+      element.addEventListener('onBannerNotFound', handleNotFound);
+      element.addEventListener('onTooLongSession', handleTooLongSession);
+    }
+  };
+
+  // Simulation timer for partner tasks
   useEffect(() => {
     if (watchingAd && adSeconds > 0) {
       const adTimer = setTimeout(() => {
@@ -185,19 +210,12 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
       }, 1000);
       return () => clearTimeout(adTimer);
     } else if (watchingAd && adSeconds === 0) {
-      // Finished
-      if (watchingAd.isAdOnly) {
-        GramQuestDB.addCoinsToUser(currentUser.telegramId, watchingAd.reward, 'ad', 'Watched Adsgram direct advertisement');
+      // Complete the normal task
+      const t = GramQuestDB.getTasks().find(tk => tk.title === watchingAd.taskName);
+      if (t) {
+        const res = GramQuestDB.completeTask(currentUser.telegramId, t.taskId);
         refreshData();
-        alert(`🎉 You watched the Adsgram Ad successfully! +${watchingAd.reward.toLocaleString()} Coins added to your balance.`);
-      } else {
-        // Complete the task
-        const t = GramQuestDB.getTasks().find(tk => tk.title === watchingAd.taskName);
-        if (t) {
-          const res = GramQuestDB.completeTask(currentUser.telegramId, t.taskId);
-          refreshData();
-          alert(res.message);
-        }
+        alert(res.message);
       }
       setWatchingAd(null);
     }
@@ -543,72 +561,6 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
                 </div>
               </section>
 
-              {/* ADSGRAM QUICK DIRECT ADS WATCH */}
-              <section className="p-4 rounded-2xl bg-gradient-to-r from-blue-900/30 to-black/30 border border-blue-500/20 shadow-sm flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
-                <div className="flex items-center space-x-3 text-left">
-                  <div className="bg-blue-500/10 p-2.5 rounded-xl border border-blue-500/20 text-blue-400">
-                    <Tv className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-extrabold text-xs tracking-tight">Adsgram Video Advertisement</h4>
-                    <p className={`text-[10px] ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Instant high reward coins per ad</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={handleWatchAdDirect}
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-[11px] px-4 py-2 rounded-xl font-extrabold transition-all active:scale-95 shadow-md flex items-center space-x-1.5"
-                >
-                  <span>Watch & Claim</span>
-                  <span className="bg-black/35 text-yellow-400 px-1.5 py-0.2 rounded font-black text-[9px]">+3,500</span>
-                </button>
-              </section>
-
-              {/* ACTIVE TASKS LIST */}
-              <section className="space-y-3">
-                <div className="flex justify-between items-center px-1">
-                  <h3 className="font-black text-sm tracking-tight flex items-center space-x-1.5">
-                    <span>🎯</span>
-                    <span>Adsgram & Partner Tasks</span>
-                  </h3>
-                  <span className={`text-[10px] ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>Limits set by admin</span>
-                </div>
-
-                <div className="space-y-2.5">
-                  {tasks.map(task => (
-                    <div 
-                      key={task.taskId}
-                      className={`p-3.5 rounded-xl border transition-all hover:border-blue-500/30 flex items-center justify-between ${theme === 'dark' ? 'bg-[#101726]/60 border-gray-800' : 'bg-white border-gray-200'}`}
-                    >
-                      <div className="flex items-center space-x-3 max-w-[70%]">
-                        <div className={`p-2 rounded-lg ${task.type === 'adsgram' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/15' : task.type === 'adsgram_ad' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/15' : 'bg-blue-500/10 text-blue-400 border border-blue-500/15'}`}>
-                          {task.type === 'normal' ? <ExternalLink className="w-4 h-4" /> : <Tv className="w-4 h-4" />}
-                        </div>
-                        <div className="text-left">
-                          <p className="font-bold text-xs tracking-tight truncate">{task.title}</p>
-                          <span className="text-[9px] opacity-65 flex items-center space-x-1 mt-0.5">
-                            <span className="capitalize font-semibold text-blue-400">{task.type.replace('_', ' ')}</span>
-                            <span>•</span>
-                            <span>Limit: {task.dailyLimit} per day</span>
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[11px] font-black text-yellow-500">
-                          +{task.reward.toLocaleString()}
-                        </span>
-                        <button 
-                          onClick={() => handleStartTask(task)}
-                          className="bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-500/20 text-[10px] px-3.5 py-1.5 rounded-lg font-black transition-all active:scale-95"
-                        >
-                          Start
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
               {/* RULES SUMMARY BOX */}
               <section className={`p-4 rounded-2xl border ${theme === 'dark' ? 'bg-gray-900/60 border-gray-850' : 'bg-gray-100/60 border-gray-200'}`}>
                 <div className="flex items-center space-x-2 mb-3">
@@ -622,6 +574,123 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
                   <li>Users must properly join channels and open bots when requested.</li>
                   <li>Failure to adhere properly can lead to admin rejection of withdrawals.</li>
                 </ul>
+              </section>
+            </motion.div>
+          )}
+
+          {/* TASKS TAB */}
+          {activeTab === 'tasks' && (
+            <motion.div 
+              key="tasks-tab"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-6 text-left"
+            >
+              {/* TITLE & HEADER */}
+              <div className="text-left px-1">
+                <h2 className="text-lg font-black tracking-tight text-white flex items-center space-x-2">
+                  <span>🎯</span>
+                  <span>Gram Quest Quest-Board</span>
+                </h2>
+                <p className={`text-[11px] ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                  Complete verification assignments below to claim massive Coin distributions
+                </p>
+              </div>
+
+              {/* OFFICIAL ADSGRAM SECURE TASK CARD */}
+              <div className="flex flex-col items-center justify-center py-6 px-4 bg-gradient-to-br from-[#10172e] to-[#0d1222] rounded-2xl border border-blue-500/10 space-y-4 text-center">
+                <div className="text-center">
+                  <h4 className="font-extrabold text-sm text-yellow-500 uppercase tracking-wider mb-1">Official Adsgram Reward Center</h4>
+                  <p className="text-[10px] text-gray-400 max-w-xs mx-auto">
+                    Complete tasks served directly by the official Adsgram SDK. Your reward will be verified securely through our Cloudflare Worker backend.
+                  </p>
+                </div>
+                
+                {isVerifying ? (
+                  <div className="flex flex-col items-center justify-center p-6 space-y-3">
+                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-xs text-blue-400 font-bold animate-pulse">Contacting Cloudflare Worker...</p>
+                  </div>
+                ) : (
+                  <div className="w-full flex justify-center py-2">
+                    {React.createElement('adsgram-task', {
+                      ref: setAdsgramRef,
+                      'data-block-id': "task-38284",
+                      'data-debug': "false",
+                      'data-debug-console': "false",
+                      class: "task"
+                    })}
+                  </div>
+                )}
+                
+                <div className="text-[10px] text-gray-400 flex flex-wrap gap-2 items-center justify-center bg-black/20 px-3 py-1.5 rounded-lg border border-gray-800/40">
+                  <span className="flex items-center space-x-1">
+                    <span className="font-semibold text-gray-500">Block ID:</span>
+                    <code className="text-blue-400 font-mono">task-38284</code>
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center space-x-1">
+                    <span className="font-semibold text-gray-500">Daily limit:</span>
+                    <span className="text-yellow-500 font-bold">{settings.adsgramDailyLimit || 10}</span>
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center space-x-1">
+                    <span className="font-semibold text-gray-500">Yield:</span>
+                    <span className="text-yellow-400 font-bold">+{ (settings.adsgramReward || 3000).toLocaleString() } Coins</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* ACTIVE PARTNER TASKS LIST */}
+              <section className="space-y-3">
+                <div className="flex justify-between items-center px-1">
+                  <h3 className="font-black text-xs tracking-tight uppercase text-blue-400 flex items-center space-x-1.5">
+                    <span>🔗</span>
+                    <span>Verified Partner Tasks</span>
+                  </h3>
+                </div>
+
+                <div className="space-y-2.5">
+                  {tasks.length === 0 ? (
+                    <div className="text-center py-6 text-xs text-gray-500 bg-[#101726]/40 rounded-xl border border-gray-800">
+                      No partner tasks available.
+                    </div>
+                  ) : (
+                    tasks.map(task => (
+                      <div 
+                        key={task.taskId}
+                        className={`p-3.5 rounded-xl border transition-all hover:border-blue-500/30 flex items-center justify-between ${theme === 'dark' ? 'bg-[#101726]/60 border-gray-800' : 'bg-white border-gray-200'}`}
+                      >
+                        <div className="flex items-center space-x-3 max-w-[70%]">
+                          <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/15">
+                            <ExternalLink className="w-4 h-4" />
+                          </div>
+                          <div className="text-left">
+                            <p className="font-bold text-xs tracking-tight truncate text-white">{task.title}</p>
+                            <span className="text-[9px] opacity-65 flex items-center space-x-1 mt-0.5">
+                              <span className="capitalize font-semibold text-blue-400">{task.type}</span>
+                              <span>•</span>
+                              <span>Limit: {task.dailyLimit} per day</span>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <span className="text-[11px] font-black text-yellow-500">
+                            +{task.reward.toLocaleString()}
+                          </span>
+                          <button 
+                            onClick={() => handleStartTask(task)}
+                            className="bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-500/20 text-[10px] px-3.5 py-1.5 rounded-lg font-black transition-all active:scale-95"
+                          >
+                            Start
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </section>
             </motion.div>
           )}
@@ -1213,18 +1282,18 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
 
             <div className="space-y-2 w-full max-w-xs pt-4">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400 font-semibold">Simulating Adsgram Player</span>
+                <span className="text-gray-400 font-semibold">Verifying Task Status</span>
                 <span className="text-yellow-500 font-black">{adSeconds}s Left</span>
               </div>
               <div className="w-full h-2 rounded-full bg-gray-800 overflow-hidden">
                 <div 
                   className="bg-blue-500 h-full rounded-full transition-all duration-1000"
-                  style={{ width: `${(adSeconds / (watchingAd.isAdOnly ? 8 : watchingAd.taskName.includes('High-Yield') ? 10 : 5)) * 100}%` }}
+                  style={{ width: `${(adSeconds / 5) * 100}%` }}
                 />
               </div>
             </div>
 
-            <p className="text-[10px] text-gray-500">Do not close this panel. Coins will be deposited automatically upon completion.</p>
+            <p className="text-[10px] text-gray-500">Do not close this panel. Coins will be deposited automatically upon verification.</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1253,13 +1322,21 @@ export default function UserPanel({ currentUser, onUpdateUser, onSwitchToAdmin }
       </AnimatePresence>
 
       {/* Bottom Sticky Native Navigation Bar */}
-      <nav className={`fixed bottom-0 left-0 right-0 h-16 border-t ${theme === 'dark' ? 'bg-[#0b0f19]/90 border-gray-850 text-gray-400' : 'bg-white/90 border-gray-200 text-gray-500'} backdrop-blur-md flex justify-around items-center px-2 z-40`}>
+      <nav className={`fixed bottom-0 left-0 right-0 h-16 border-t ${theme === 'dark' ? 'bg-[#0b0f19]/90 border-gray-850 text-gray-400' : 'bg-white/90 border-gray-200 text-gray-500'} backdrop-blur-md flex justify-around items-center px-1 z-40`}>
         <button 
           onClick={() => { setActiveTab('home'); refreshData(); }}
           className={`flex flex-col items-center justify-center space-y-1 w-14 h-full transition-all ${activeTab === 'home' ? 'text-blue-500 font-bold' : 'hover:text-blue-400/80'}`}
         >
           <Coins className="w-5 h-5" />
           <span className="text-[9px]">Home</span>
+        </button>
+
+        <button 
+          onClick={() => { setActiveTab('tasks'); refreshData(); }}
+          className={`flex flex-col items-center justify-center space-y-1 w-14 h-full transition-all ${activeTab === 'tasks' ? 'text-blue-500 font-bold' : 'hover:text-blue-400/80'}`}
+        >
+          <CheckSquare className="w-5 h-5" />
+          <span className="text-[9px]">Tasks</span>
         </button>
 
         <button 

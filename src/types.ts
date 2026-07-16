@@ -64,6 +64,8 @@ export interface AppSettings {
   welcomeMessage: string;
   dailyTaskLimit: number;
   supportUsername: string;
+  adsgramReward: number;
+  adsgramDailyLimit: number;
 }
 
 export interface SpinHistory {

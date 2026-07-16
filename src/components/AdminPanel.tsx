@@ -704,6 +704,26 @@ export default function AdminPanel({ onSwitchToUser }: AdminPanelProps) {
                   className="w-full bg-[#11192e] border border-gray-800 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500"
                 />
               </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-gray-400">Adsgram Task Reward Coins</label>
+                <input 
+                  type="number" 
+                  value={settings.adsgramReward ?? 3000}
+                  onChange={e => setSettings({ ...settings, adsgramReward: parseInt(e.target.value) || 3000 })}
+                  className="w-full bg-[#11192e] border border-gray-800 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-[10px] uppercase font-bold text-gray-400">Adsgram Task Daily Limit</label>
+                <input 
+                  type="number" 
+                  value={settings.adsgramDailyLimit ?? 10}
+                  onChange={e => setSettings({ ...settings, adsgramDailyLimit: parseInt(e.target.value) || 10 })}
+                  className="w-full bg-[#11192e] border border-gray-800 rounded-lg px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500"
+                />
+              </div>
             </div>
 
             <div className="pt-4 border-t border-gray-800 flex justify-end">

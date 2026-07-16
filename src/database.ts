@@ -12,13 +12,12 @@ const DEFAULT_SETTINGS: AppSettings = {
   botUsername: 'GramQuestBot',
   welcomeMessage: 'Welcome to Gram Quest! 🎉 Complete Adsgram tasks, spin the wheel, and refer friends to earn Coins and convert them to withdrawable Gram!',
   dailyTaskLimit: 30,
-  supportUsername: 'gramquest_support_admin'
+  supportUsername: 'gramquest_support_admin',
+  adsgramReward: 3000,
+  adsgramDailyLimit: 10
 };
 
 const DEFAULT_TASKS: Task[] = [
-  { taskId: 'task_1', type: 'adsgram', title: 'Watch Adsgram Premium Video', reward: 1500, dailyLimit: 10, active: true },
-  { taskId: 'task_2', type: 'adsgram', title: 'Watch High-Yield Sponsor Ad', reward: 2500, dailyLimit: 5, active: true },
-  { taskId: 'task_3', type: 'adsgram_ad', title: 'Click on Adsgram Sponsored Banner', reward: 1000, dailyLimit: 15, active: true },
   { taskId: 'task_4', type: 'normal', title: 'Join Gram Quest Official Telegram Channel', reward: 5000, dailyLimit: 1, active: true, url: 'https://t.me/GramQuestChannel' },
   { taskId: 'task_5', type: 'normal', title: 'Subscribe to TON Developer Community', reward: 7500, dailyLimit: 1, active: true, url: 'https://t.me/toncoin' },
   { taskId: 'task_6', type: 'normal', title: 'Follow Gram Quest on X (Twitter)', reward: 5000, dailyLimit: 1, active: true, url: 'https://twitter.com/GramQuest' }
@@ -629,5 +628,53 @@ export class GramQuestDB {
       }
     }
     return { success: false, count: 0 };
+  }
+
+  // --- SECURE CLOUDFLARE WORKER BACKEND SIMULATION ---
+  static async verifyAdsgramTaskOnBackend(telegramId: string, blockId: string): Promise<{ success: boolean; reward: number; message: string }> {
+    console.log(`%c[Cloudflare Worker Backend] POST /api/verify-adsgram-task - telegramId: ${telegramId}, blockId: ${blockId}`, 'color: #00ffcc; font-weight: bold;');
+    
+    // Simulate API network latency
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    const users = this.getUsers();
+    const user = users.find(u => u.telegramId === telegramId);
+    if (!user) return { success: false, reward: 0, message: 'Backend verification error: User not found' };
+    if (user.blocked) return { success: false, reward: 0, message: 'Backend verification error: Account is blocked' };
+
+    if (blockId !== 'task-38284') {
+      return { success: false, reward: 0, message: 'Backend verification error: Invalid Adsgram Block ID' };
+    }
+
+    const settings = this.getSettings();
+    const reward = settings.adsgramReward || 3000;
+    const dailyLimit = settings.adsgramDailyLimit || 10;
+
+    // Count completions of Adsgram tasks for this user today
+    const earnings = this.getEarnings();
+    const today = new Date().toDateString();
+    const userAdsgramEarningsToday = earnings.filter(e => 
+      e.userId === telegramId && 
+      e.type === 'task' && 
+      e.description.includes('Adsgram Task') && 
+      new Date(e.createdAt).toDateString() === today
+    );
+
+    if (userAdsgramEarningsToday.length >= dailyLimit) {
+      return { success: false, reward: 0, message: `Backend verification error: Daily limit of ${dailyLimit} reached for Adsgram Tasks` };
+    }
+
+    // Add reward
+    this.addCoinsToUser(telegramId, reward, 'task', `Completed Adsgram Task (Block ID: ${blockId})`);
+
+    // Increment user daily task progress count (for the 30/30 bonus)
+    const currentProgress = this.getUserDailyTaskCount(telegramId);
+    this.setUserDailyTaskCount(telegramId, currentProgress + 1);
+
+    return {
+      success: true,
+      reward,
+      message: `Verified by Cloudflare Worker! +${reward.toLocaleString()} Coins added.`
+    };
   }
 }
