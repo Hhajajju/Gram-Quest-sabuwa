@@ -65,10 +65,14 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#070b13] text-white font-sans selection:bg-blue-600 selection:text-white">
-
-    </div>
-  );
+  <div className="min-h-screen bg-[#070b13] text-white font-sans selection:bg-blue-600 selection:text-white">
+    <UserPanel
+      currentUser={currentUser}
+      onUpdateUser={handleUpdateUser}
+    />
+  </div>
+);
+    
 }
 
 // Simple internal X icon for clean look
