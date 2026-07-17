@@ -259,32 +259,6 @@ static async getUser(telegramId: string): Promise<User> {
 
 
   return await response.json();
-  } {
-    const users = this.getUsers();
-    const user = users.find(u => u.telegramId === telegramId);
-    if (!user) return { success: false, reward: 0, message: 'User not found' };
-    if (user.blocked) return { success: false, reward: 0, message: 'Account blocked' };
-
-    const tasks = this.getTasks();
-    const task = tasks.find(t => t.taskId === taskId);
-    if (!task || !task.active) return { success: false, reward: 0, message: 'Task not active or not found' };
-
-    // Increment user daily progress count
-    const currentProgress = this.getUserDailyTaskCount(telegramId);
-    const limit = this.getSettings().dailyTaskLimit;
-
-    // Check if task completed fits limit, or just increase progress
-    this.setUserDailyTaskCount(telegramId, currentProgress + 1);
-
-    // Add coin balance
-    this.addCoinsToUser(telegramId, task.reward, 'task', `Completed task: ${task.title}`);
-
-    return {
-      success: true,
-      reward: task.reward,
-      message: `Task "${task.title}" completed successfully! +${task.reward} Coins added.`
-    };
-  }
 
   // 4. Claim 30 Daily Task Bonus (including Referral verification trigger)
   static claimDailyBonus(telegramId: string): { success: boolean; reward: number; message: string } {
