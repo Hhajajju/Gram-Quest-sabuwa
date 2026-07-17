@@ -110,9 +110,8 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
       onUpdateUser(updatedUser);
     }
 
-    setSettings(GramQuestDB.getSettings());
     const loadedTasks = await GramQuestDB.getTasks();
-setTasks(loadedTasks.filter(t => t.active));
+setTasks(loadedTasks);
     setCompletedTasksCount(GramQuestDB.getUserDailyTaskCount(currentUser.telegramId));
     setNotifications(GramQuestDB.getBotNotifications().filter(n => n.recipientId === currentUser.telegramId || n.recipientId === 'all'));
     
