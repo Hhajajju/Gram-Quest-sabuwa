@@ -25,7 +25,6 @@ export default function App() {
     const finalStartParam = startParam || urlStartParam;
 
     if (tgUser) {
-    if (tgUser) {
   const user = GramQuestDB.loginUser(
     tgUser.id.toString(),
     tgUser.username || `tg_user_${tgUser.id}`,
@@ -41,7 +40,6 @@ export default function App() {
     finalStartParam
   );
   setCurrentUser(user);
-    }
     }
   }, []);
   const handleUpdateUser = (updatedUser: User) => {
