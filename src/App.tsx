@@ -33,17 +33,16 @@ export default function App() {
         finalStartParam
       );
       setCurrentUser(user);
-    } 
-        else {
-  const user = GramQuestDB.loginUser(
-    'guest',
-    'Telegram User',
-    '',
-    finalStartParam
-  );
-  setCurrentUser(user);
-        }
-
+        } else {
+      const user = GramQuestDB.loginUser(
+        'guest',
+        'Telegram User',
+        '',
+        finalStartParam
+      );
+      setCurrentUser(user);
+    }
+  }, []);
   const handleUpdateUser = (updatedUser: User) => {
     setCurrentUser(updatedUser);
   };
