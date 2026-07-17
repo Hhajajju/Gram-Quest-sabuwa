@@ -94,10 +94,6 @@ export class GramQuestDB {
   return await response.json();
   }
 
-  static getTasks(): Task[] {
-    return this.getStorageItem<Task[]>('gq_tasks', DEFAULT_TASKS);
-  }
-
   static saveTasks(tasks: Task[]): void {
     this.setStorageItem('gq_tasks', tasks);
   }
@@ -259,6 +255,7 @@ static async getUser(telegramId: string): Promise<User> {
 
 
   return await response.json();
+  }
 
   // 4. Claim 30 Daily Task Bonus (including Referral verification trigger)
   static claimDailyBonus(telegramId: string): { success: boolean; reward: number; message: string } {
