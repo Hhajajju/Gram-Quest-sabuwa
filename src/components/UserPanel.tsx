@@ -149,7 +149,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
     if (task.url && task.type === 'normal') {
       window.open(task.url, '_blank');
       setWatchingAd({
-        active: false,
+        active: true,
         taskName: task.title,
         reward: task.reward,
         isAdOnly: false
@@ -646,7 +646,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
                   <div className="w-full flex justify-center py-2">
                     {React.createElement('adsgram-task', {
                       ref: setAdsgramRef,
-                      'data-block-id': "task-38284",
+                      'data-block-id': "task-38736",
                       'data-debug': "false",
                       'data-debug-console': "false",
                       class: "task"
