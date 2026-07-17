@@ -25,22 +25,23 @@ export default function App() {
     const finalStartParam = startParam || urlStartParam;
 
     if (tgUser) {
-      // Real Telegram identity connected
-      const user = GramQuestDB.loginUser(
-        tgUser.id.toString(),
-        tgUser.username || `tg_user_${tgUser.id}`,
-        tgUser.photo_url || '',
-        finalStartParam
-      );
-      setCurrentUser(user);
-        } else {
-      const user = GramQuestDB.loginUser(
-        'guest',
-        'Telegram User',
-        '',
-        finalStartParam
-      );
-      setCurrentUser(user);
+    if (tgUser) {
+  const user = GramQuestDB.loginUser(
+    tgUser.id.toString(),
+    tgUser.username || `tg_user_${tgUser.id}`,
+    tgUser.photo_url || '',
+    finalStartParam
+  );
+  setCurrentUser(user);
+} else {
+  const user = GramQuestDB.loginUser(
+    'guest',
+    'Telegram User',
+    '',
+    finalStartParam
+  );
+  setCurrentUser(user);
+    }
     }
   }, []);
   const handleUpdateUser = (updatedUser: User) => {
