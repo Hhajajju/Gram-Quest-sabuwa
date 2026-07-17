@@ -8,6 +8,7 @@ export default function App() {
 
 
   useEffect(() => {
+  async function loadUser() {
     // 1. Detect Telegram WebApp parameters
     const tg = (window as any).Telegram?.WebApp;
     if (tg) {
