@@ -9,42 +9,43 @@ export default function App() {
 
   useEffect(() => {
   async function loadUser() {
-    // 1. Detect Telegram WebApp parameters
     const tg = (window as any).Telegram?.WebApp;
+
     if (tg) {
       tg.ready();
       tg.expand();
     }
 
-    // Attempt to read Telegram User details
     const tgUser = tg?.initDataUnsafe?.user;
-const startParam = tg?.initDataUnsafe?.start_param || null;
+    const startParam = tg?.initDataUnsafe?.start_param || null;
 
-    // Fallback: Read query parameters for easy testing/simulation (e.g., ?startapp=1001)
     const urlParams = new URLSearchParams(window.location.search);
     const urlStartParam = urlParams.get('startapp') || urlParams.get('ref');
     const finalStartParam = startParam || urlStartParam;
 
     if (tgUser) {
-  const user = await GramQuestDB.loginUser(
-  tgUser.id.toString(),
-  tgUser.username || `tg_user_${tgUser.id}`,
-  tgUser.photo_url || '',
-  finalStartParam
-);
+      const user = await GramQuestDB.loginUser(
+        tgUser.id.toString(),
+        tgUser.username || `tg_user_${tgUser.id}`,
+        tgUser.photo_url || '',
+        finalStartParam
+      );
 
-setCurrentUser(user);
-} else {
-  const user = await GramQuestDB.loginUser(
-  'guest',
-  'Telegram User',
-  '',
-  finalStartParam
-);
+      setCurrentUser(user);
+    } else {
+      const user = await GramQuestDB.loginUser(
+        'guest',
+        'Telegram User',
+        '',
+        finalStartParam
+      );
 
-setCurrentUser(user);
+      setCurrentUser(user);
     }
-  }, []);
+  }
+
+  loadUser();
+}, []);
   const handleUpdateUser = (updatedUser: User) => {
     setCurrentUser(updatedUser);
   };
