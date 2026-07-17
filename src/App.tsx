@@ -34,13 +34,14 @@ const startParam = tg?.initDataUnsafe?.start_param || null;
 
 setCurrentUser(user);
 } else {
-  const user = GramQuestDB.loginUser(
-    'guest',
-    'Telegram User',
-    '',
-    finalStartParam
-  );
-  setCurrentUser(user);
+  const user = await GramQuestDB.loginUser(
+  'guest',
+  'Telegram User',
+  '',
+  finalStartParam
+);
+
+setCurrentUser(user);
     }
   }, []);
   const handleUpdateUser = (updatedUser: User) => {
