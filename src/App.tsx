@@ -6,11 +6,6 @@ import { User } from './types';
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  // Simulation Controls for Testing inside AI Studio preview
-  const [simId, setSimId] = useState('8839012');
-  const [simName, setSimName] = useState('QuestFighter');
-  const [simPhoto, setSimPhoto] = useState('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop');
-  const [showIdentityModal, setShowIdentityModal] = useState(false);
 
   useEffect(() => {
     // 1. Detect Telegram WebApp parameters
