@@ -145,18 +145,52 @@ setTasks(loadedTasks);
   };
 
   // 2. Watch Partner Task specifications
-  const handleStartTask = (task: Task) => {
-    if (task.url && task.type === 'normal') {
-      window.open(task.url, '_blank');
-      setWatchingAd({
-        active: true,
-        taskName: task.title,
-        reward: task.reward,
-        isAdOnly: false
-      });
-      setAdSeconds(5); // 5s simulation for partner task validation
+  const handleStartTask = async (task: Task) => {
+
+  try {
+
+    const response = await fetch(
+      "https://gram-quest-api.raheeumar9.workers.dev/api/complete-task",
+      {
+        method: "POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          telegramId: currentUser.telegramId,
+          taskId: task.taskId
+        })
+      }
+    );
+
+
+    const result = await response.json();
+
+
+    if(result.success){
+
+      onUpdateUser(result.user);
+
+      alert(
+        `🎉 Task completed! +${result.reward.toLocaleString()} Coins`
+      );
+
+      refreshData();
+
+    } else {
+
+      alert(result.message);
+
     }
-  };
+
+
+  } catch(error){
+
+    alert("Task completion failed");
+
+  }
+
+};
 
   const handleReward = async (event: any) => {
     const blockId = event.detail || 'task-38736';
