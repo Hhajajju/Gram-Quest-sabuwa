@@ -25,13 +25,14 @@ const startParam = tg?.initDataUnsafe?.start_param || null;
     const finalStartParam = startParam || urlStartParam;
 
     if (tgUser) {
-  const user = GramQuestDB.loginUser(
-    tgUser.id.toString(),
-    tgUser.username || `tg_user_${tgUser.id}`,
-    tgUser.photo_url || '',
-    finalStartParam
-  );
-  setCurrentUser(user);
+  const user = await GramQuestDB.loginUser(
+  tgUser.id.toString(),
+  tgUser.username || `tg_user_${tgUser.id}`,
+  tgUser.photo_url || '',
+  finalStartParam
+);
+
+setCurrentUser(user);
 } else {
   const user = GramQuestDB.loginUser(
     'guest',
