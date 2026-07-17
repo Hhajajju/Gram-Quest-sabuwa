@@ -47,14 +47,6 @@ export default function App() {
     setCurrentUser(updatedUser);
   };
 
-  const handleResetApp = () => {
-    if (confirm('Are you sure you want to reset all data (users, balances, settings, withdrawals, referrals) back to default?')) {
-      localStorage.clear();
-      alert('All app state reset! Reloading...');
-      window.location.reload();
-    }
-  };
-
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-[#0b0f19] text-white flex flex-col items-center justify-center p-6 font-sans">
