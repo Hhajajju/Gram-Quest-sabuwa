@@ -33,28 +33,16 @@ export default function App() {
         finalStartParam
       );
       setCurrentUser(user);
-    } else {
-      // Development or simulated profile login
-      // Read simulated states from localStorage or defaults
-      const storedSim = localStorage.getItem('gq_sim_identity');
-      if (storedSim) {
-        try {
-          const parsed = JSON.parse(storedSim);
-          setSimId(parsed.id);
-          setSimName(parsed.name);
-          setSimPhoto(parsed.photo);
-          const user = GramQuestDB.loginUser(parsed.id, parsed.name, parsed.photo, finalStartParam);
-          setCurrentUser(user);
-          return;
-        } catch {
-          // ignore
+    } 
+        else {
+  const user = GramQuestDB.loginUser(
+    'guest',
+    'Telegram User',
+    '',
+    finalStartParam
+  );
+  setCurrentUser(user);
         }
-      }
-
-      const user = GramQuestDB.loginUser(simId, simName, simPhoto, finalStartParam);
-      setCurrentUser(user);
-    }
-  }, []);
 
   const handleUpdateUser = (updatedUser: User) => {
     setCurrentUser(updatedUser);
