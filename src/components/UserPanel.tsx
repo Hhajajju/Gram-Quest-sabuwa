@@ -102,7 +102,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
     return () => clearInterval(timer);
   }, [currentUser.telegramId, activeTab]);
 
-  const refreshData = () => {
+  const refreshData = async () => {
     // Reload user to ensure accurate balances
     const users = GramQuestDB.getUsers();
     const updatedUser = users.find(u => u.telegramId === currentUser.telegramId);
