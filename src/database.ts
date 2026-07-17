@@ -194,25 +194,35 @@ static async getUser(telegramId: string): Promise<User> {
   return await response.json();
 }
   // 2. Add Earnings with 10% commission flow to Referrer
-  static addCoinsToUser(telegramId: string, amount: number, earningType: Earning['type'], description: string): void {
-    const users = this.getUsers();
-    const user = users.find(u => u.telegramId === telegramId);
-    if (!user || user.blocked) return;
+  static async addCoinsToUser(
+  telegramId: string,
+  amount: number,
+  earningType: Earning['type'],
+  description: string
+): Promise<User> {
 
-    user.coinBalance += amount;
-    this.saveUsers(users);
+  const response = await fetch(
+    "https://gram-quest-api.raheeumar9.workers.dev/api/add-coins",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        telegramId,
+        amount,
+        earningType,
+        description
+      })
+    }
+  );
 
-    // Save earning history
-    const earnings = this.getEarnings();
-    earnings.unshift({
-      id: 'earn_' + Math.random().toString(36).substr(2, 9),
-      userId: telegramId,
-      type: earningType,
-      amount,
-      description,
-      createdAt: new Date().toISOString()
-    });
-    this.saveEarnings(earnings);
+  if (!response.ok) {
+    throw new Error("Failed to add coins");
+  }
+
+  return await response.json();
+  }
 
     // Lifetime referral commission: Referrer gets 10% of ALL earnings forever
     if (user.referredBy && earningType !== 'commission' && earningType !== 'referral_reward') {
