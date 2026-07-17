@@ -159,7 +159,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   };
 
   const handleReward = async (event: any) => {
-    const blockId = event.detail || 'task-38284';
+    const blockId = event.detail || 'task-38736';
     setIsVerifying(true);
     try {
       const res = await GramQuestDB.verifyAdsgramTaskOnBackend(currentUser.telegramId, blockId);
