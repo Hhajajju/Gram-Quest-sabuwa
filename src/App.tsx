@@ -47,13 +47,6 @@ export default function App() {
     setCurrentUser(updatedUser);
   };
 
-    const user = GramQuestDB.loginUser(simId, simName, simPhoto, finalStartParam);
-    setCurrentUser(user);
-    setShowIdentityModal(false);
-    alert(`Switched identity successfully! Logged in as @${simName} (ID: ${simId}).`);
-    window.location.reload(); // Refresh to clean state & load stats
-  };
-
   const handleResetApp = () => {
     if (confirm('Are you sure you want to reset all data (users, balances, settings, withdrawals, referrals) back to default?')) {
       localStorage.clear();
