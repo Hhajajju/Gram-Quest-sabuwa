@@ -224,36 +224,6 @@ static async getUser(telegramId: string): Promise<User> {
   return await response.json();
   }
 
-    // Lifetime referral commission: Referrer gets 10% of ALL earnings forever
-    if (user.referredBy && earningType !== 'commission' && earningType !== 'referral_reward') {
-      const referrerAmount = Math.floor(amount * 0.10);
-      if (referrerAmount > 0) {
-        const referrer = users.find(u => u.telegramId === user.referredBy);
-        if (referrer && !referrer.blocked) {
-          referrer.coinBalance += referrerAmount;
-          this.saveUsers(users);
-
-          earnings.unshift({
-            id: 'earn_' + Math.random().toString(36).substr(2, 9),
-            userId: user.referredBy,
-            type: 'commission',
-            amount: referrerAmount,
-            description: `10% commission from @${user.username}'s ${earningType}`,
-            createdAt: new Date().toISOString()
-          });
-          this.saveEarnings(earnings);
-
-          // Simulated notification
-          this.logBotNotification(
-            referrer.telegramId,
-            referrer.username,
-            `💰 You earned ${referrerAmount.toLocaleString()} Coins commission from @${user.username}!`
-          );
-        }
-      }
-    }
-  }
-
   // 3. Complete Task
   static completeTask(telegramId: string, taskId: string): { success: boolean; reward: number; message: string } {
     const users = this.getUsers();
