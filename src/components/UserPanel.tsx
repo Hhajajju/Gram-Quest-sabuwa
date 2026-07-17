@@ -149,7 +149,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
     if (task.url && task.type === 'normal') {
       window.open(task.url, '_blank');
       setWatchingAd({
-        active: true,
+        active: false,
         taskName: task.title,
         reward: task.reward,
         isAdOnly: false
