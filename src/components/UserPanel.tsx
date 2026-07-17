@@ -647,7 +647,7 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
                     {React.createElement('adsgram-task', {
                       ref: setAdsgramRef,
                       'data-block-id': "task-38736",
-                      'data-debug': "false",
+                      'data-debug': "true",
                       'data-debug-console': "false",
                       class: "task"
                     })}
