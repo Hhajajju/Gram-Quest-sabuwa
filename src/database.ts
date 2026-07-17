@@ -151,76 +151,36 @@ export class GramQuestDB {
   // --- CORE LOGIC OPERATIONS ---
 
   // 1. User login (or creation)
-  static loginUser(telegramId: string, username: string, profilePhoto: string, refId: string | null): User {
-    const users = this.getUsers();
-    let user = users.find(u => u.telegramId === telegramId);
+  
+      static async loginUser(
+  telegramId: string,
+  username: string,
+  profilePhoto: string,
+  refId: string | null
+): Promise<User> {
 
-    if (!user) {
-      // Create user account
-      let referrerId: string | null = null;
-      if (refId && refId !== telegramId) {
-        // Verify if referrer exists
-        const referrer = users.find(u => u.telegramId === refId);
-        if (referrer) {
-          referrerId = refId;
-        }
-      }
-
-      user = {
+  const response = await fetch(
+    "https://gram-quest-api.raheeumar9.workers.dev/api/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
         telegramId,
         username,
-        profilePhoto: profilePhoto || `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`,
-        coinBalance: 0,
-        gramBalance: 0,
-        referredBy: referrerId,
-        verifiedReferrals: 0,
-        blocked: false,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(user);
-      this.saveUsers(users);
-
-      // Save referral record
-      if (referrerId) {
-        const referrals = this.getReferrals();
-        const refUser = users.find(u => u.telegramId === referrerId);
-        referrals.push({
-          id: 'ref_' + Math.random().toString(36).substr(2, 9),
-          referrerId,
-          referredUserId: telegramId,
-          referredUsername: username,
-          status: 'pending',
-          createdAt: new Date().toISOString(),
-          verifiedAt: null
-        });
-        this.saveReferrals(referrals);
-
-        // Notify referrer that someone joined via their link
-        this.logBotNotification(
-          referrerId,
-          refUser?.username || referrerId,
-          `👥 A new user @${username} joined using your referral link. Complete their first 30 daily tasks to unlock your 100,000 Coins bonus!`
-        );
-      }
-    } else {
-      // If user exists but photo/username updated
-      let updated = false;
-      if (user.username !== username) {
-        user.username = username;
-        updated = true;
-      }
-      if (profilePhoto && user.profilePhoto !== profilePhoto) {
-        user.profilePhoto = profilePhoto;
-        updated = true;
-      }
-      if (updated) {
-        this.saveUsers(users);
-      }
+        profilePhoto,
+        refId
+      })
     }
+  );
 
-    return user;
+  if (!response.ok) {
+    throw new Error("Login failed");
   }
+
+  return await response.json();
+}
 
   // 2. Add Earnings with 10% commission flow to Referrer
   static addCoinsToUser(telegramId: string, amount: number, earningType: Earning['type'], description: string): void {
