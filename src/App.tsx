@@ -91,41 +91,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#070b13] text-white font-sans selection:bg-blue-600 selection:text-white">
       
-      {/* Dev Controller Floating Bar for AI Studio Interface Verification */}
-      <div className="bg-[#121c32]/90 border-b border-blue-500/15 text-xs text-blue-300 px-4 py-2 flex flex-wrap justify-between items-center gap-3 relative z-50">
-        <div className="flex items-center space-x-2">
-          <span className="bg-blue-600 text-white px-1.5 py-0.2 rounded font-black text-[9px]">DEV TOOLS</span>
-          <span className="opacity-80">Referral/Multi-Identity Emulator</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button 
-            onClick={() => setShowIdentityModal(true)}
-            className="bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2.5 py-1 rounded border border-blue-500/20 text-[10px] font-bold transition-all"
-          >
-            👤 Switch Telegram Identity
-          </button>
-          
-          <button 
-            onClick={handleResetApp}
-            className="bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2.5 py-1 rounded border border-red-500/20 text-[10px] font-bold transition-all"
-          >
-            🔄 Reset Database (Fresh Start)
-          </button>
-
-          <span className="opacity-40">|</span>
-
-          <span className="text-[10px] opacity-80">
-            Testing Referrals? Add <code className="bg-black/40 px-1 rounded text-yellow-500 font-mono">?startapp=1001</code> to URL
-          </span>
-        </div>
-      </div>
-
-      {/* Main Container Router */}
-      <UserPanel 
-  currentUser={currentUser}
-  onUpdateUser={handleUpdateUser}
-/>
+      
 
       {/* DEV IDENTITY EMULATOR MODAL */}
       {showIdentityModal && (
