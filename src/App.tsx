@@ -16,8 +16,8 @@ export default function App() {
     }
 
     // Attempt to read Telegram User details
-    let tgUser = tg?.initDataUnsafe?.user;
-    let startParam = tg?.initDataUnsafe?.start_param || null;
+    const tgUser = tg?.initDataUnsafe?.user;
+const startParam = tg?.initDataUnsafe?.start_param || null;
 
     // Fallback: Read query parameters for easy testing/simulation (e.g., ?startapp=1001)
     const urlParams = new URLSearchParams(window.location.search);
