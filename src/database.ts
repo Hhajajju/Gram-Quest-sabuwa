@@ -181,7 +181,18 @@ export class GramQuestDB {
 
   return await response.json();
 }
+static async getUser(telegramId: string): Promise<User> {
 
+  const response = await fetch(
+    `https://gram-quest-api.raheeumar9.workers.dev/api/user/${telegramId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("User not found");
+  }
+
+  return await response.json();
+}
   // 2. Add Earnings with 10% commission flow to Referrer
   static addCoinsToUser(telegramId: string, amount: number, earningType: Earning['type'], description: string): void {
     const users = this.getUsers();
