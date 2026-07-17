@@ -47,22 +47,6 @@ export default function App() {
     setCurrentUser(updatedUser);
   };
 
-  // Allow switching identities to test Referral systems
-  const handleSwitchSimulatedIdentity = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!simId.trim() || !simName.trim()) {
-      alert('Please fill out all identity fields.');
-      return;
-    }
-
-    // Save configuration
-    localStorage.setItem('gq_sim_identity', JSON.stringify({ id: simId, name: simName, photo: simPhoto }));
-
-    // Re-trigger login user
-    // Look if any custom query parameter exists
-    const urlParams = new URLSearchParams(window.location.search);
-    const finalStartParam = urlParams.get('startapp') || urlParams.get('ref') || null;
-
     const user = GramQuestDB.loginUser(simId, simName, simPhoto, finalStartParam);
     setCurrentUser(user);
     setShowIdentityModal(false);
