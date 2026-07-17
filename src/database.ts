@@ -233,7 +233,33 @@ static async getUser(telegramId: string): Promise<User> {
   }
 
   // 3. Complete Task
-  static completeTask(telegramId: string, taskId: string): { success: boolean; reward: number; message: string } {
+  static async completeTask(
+  telegramId: string,
+  taskId: string
+): Promise<any> {
+
+  const response = await fetch(
+    "https://gram-quest-api.raheeumar9.workers.dev/api/complete-task",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        telegramId,
+        taskId
+      })
+    }
+  );
+
+
+  if (!response.ok) {
+    throw new Error("Task completion failed");
+  }
+
+
+  return await response.json();
+  } {
     const users = this.getUsers();
     const user = users.find(u => u.telegramId === telegramId);
     if (!user) return { success: false, reward: 0, message: 'User not found' };
