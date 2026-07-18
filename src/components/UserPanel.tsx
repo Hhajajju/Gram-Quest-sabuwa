@@ -121,7 +121,9 @@ setTasks(loadedTasks);
 const progressData = await progressRes.json();
 
 setCompletedTasksCount(progressData.completed);
-
+const userNotifications = await GramQuestDB.getNotifications(
+  currentUser.telegramId
+);
 setNotifications(userNotifications);
     
     // Withdrawals
