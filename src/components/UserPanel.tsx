@@ -282,30 +282,36 @@ const sorted = [...users].sort(
     }
   }, [watchingAd, adSeconds]);
 
-  // 3. Claim 30 Task Daily Bonus
-  const res = await fetch(
-"https://gram-quest-api.raheeumar9.workers.dev/api/daily-bonus",
-{
- method:"POST",
- headers:{
- "Content-Type":"application/json"
- },
- body:JSON.stringify({
- telegramId: currentUser.telegramId
- })
-}
-);
+// 3. Claim 30 Task Daily Bonus
+const handleClaimDailyBonus = async () => {
+  try {
+    const res = await fetch(
+      "https://gram-quest-api.raheeumar9.workers.dev/api/daily-bonus",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          telegramId: currentUser.telegramId
+        })
+      }
+    );
 
-const data = await res.json();
+    const data = await res.json();
 
-onUpdateUser(data.user);
-    if (res.success) {
+    if (data.success) {
+      onUpdateUser(data.user);
       refreshData();
-      alert(res.message);
+      alert(data.message);
     } else {
-      alert(res.message);
+      alert(data.message);
     }
-  };
+
+  } catch (error) {
+    alert("Daily bonus failed");
+  }
+};
 
   // 4. Spin Wheel Animation
   const handleSpinWheel = () => {
