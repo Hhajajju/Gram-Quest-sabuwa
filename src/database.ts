@@ -120,8 +120,17 @@ export class GramQuestDB {
     this.setStorageItem('gq_tasks', tasks);
   }
 
-  static getSettings(): AppSettings {
-    return this.getStorageItem<AppSettings>('gq_settings', DEFAULT_SETTINGS);
+  static async getSettings(): Promise<AppSettings> {
+
+  const response = await fetch(
+    "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to load settings");
+  }
+
+  return await response.json();
   }
 
   static saveSettings(settings: AppSettings): void {
