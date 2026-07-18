@@ -54,12 +54,16 @@ export class GramQuestDB {
   }
 
   // Collections state
-  static getUsers(): User[] {
-    return this.getStorageItem<User[]>('gq_users', SEED_USERS);
+  static async getUser(telegramId: string): Promise<User> {
+  const response = await fetch(
+    `https://gram-quest-api.raheeumar9.workers.dev/api/user/${telegramId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("User not found");
   }
 
-  static saveUsers(users: User[]): void {
-    this.setStorageItem('gq_users', users);
+  return await response.json();
   }
 
   static getEarnings(): Earning[] {
