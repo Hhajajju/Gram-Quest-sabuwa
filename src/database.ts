@@ -128,8 +128,17 @@ export class GramQuestDB {
     this.setStorageItem('gq_settings', settings);
   }
 
-  static getSpinHistory(): SpinHistory[] {
-    return this.getStorageItem<SpinHistory[]>('gq_spin_history', []);
+  static async getSpinHistory(telegramId: string): Promise<SpinHistory[]> {
+
+  const response = await fetch(
+    `https://gram-quest-api.raheeumar9.workers.dev/api/spin-history/${telegramId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to load spin history");
+  }
+
+  return await response.json();
   }
 
   static saveSpinHistory(history: SpinHistory[]): void {
