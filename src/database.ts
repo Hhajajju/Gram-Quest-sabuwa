@@ -210,9 +210,7 @@ export class GramQuestDB {
       console.error("Failed to save bot notification:", error);
     });
   }
-    // Custom browser alert or notification fallback for visual validation
-    console.log(`[Telegram Bot to ${recipientName} (${recipientId})]: ${message}`);
-  }
+    
 
   // --- CORE LOGIC OPERATIONS ---
 
