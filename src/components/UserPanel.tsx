@@ -115,7 +115,12 @@ if (updatedUser) {
       onUpdateUser(updatedUser);
     }
 
-    const loadedTasks = await GramQuestDB.getTasks();
+    const tasksRes = await fetch(
+  "https://gram-quest-api.raheeumar9.workers.dev/api/tasks"
+);
+
+const loadedTasks = await tasksRes.json();
+
 setTasks(loadedTasks);
     const progressRes = await fetch(
   `https://gram-quest-api.raheeumar9.workers.dev/api/task-progress/${currentUser.telegramId}`
