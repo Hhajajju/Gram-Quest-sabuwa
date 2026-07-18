@@ -52,10 +52,6 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   const [showAdOverlay, setShowAdOverlay] = useState(false);
   const [spinHistory, setSpinHistory] = useState<SpinHistory[]>([]);
 
-  // Adsgram Simulation States
-  const [watchingAd, setWatchingAd] = useState<{ active: boolean; taskName: string; reward: number; isAdOnly: boolean } | null>(null);
-  const [adSeconds, setAdSeconds] = useState(0);
-
   // Conversion States
   const [coinsToConvert, setCoinsToConvert] = useState<string>('');
   const [conversionError, setConversionError] = useState('');
