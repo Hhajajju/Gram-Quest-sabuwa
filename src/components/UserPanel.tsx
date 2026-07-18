@@ -419,7 +419,6 @@ const handleClaimDailyBonus = async () => {
   };
 if (!settings) {
   return <div className="p-5 text-white">Loading...</div>;
-}
 
 const simulatedRefLink = `https://t.me/${settings.botUsername}?startapp=${currentUser.telegramId}`;
 
