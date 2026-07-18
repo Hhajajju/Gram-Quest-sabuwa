@@ -167,12 +167,14 @@ const sorted = [...users].sort(
 
   // 1. Copy referral link
   const handleCopyLink = () => {
-    const link = `https://t.me/${settings.botUsername}?startapp=${currentUser.telegramId}`;
-    navigator.clipboard.writeText(link);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
-  };
+  if (!settings) return;
 
+  const link = `https://t.me/${settings.botUsername}?startapp=${currentUser.telegramId}`;
+  navigator.clipboard.writeText(link);
+  setCopiedLink(true);
+
+  setTimeout(() => setCopiedLink(false), 2000);
+};
   // 2. Watch Partner Task specifications
   const handleStartTask = async (task: Task) => {
 
