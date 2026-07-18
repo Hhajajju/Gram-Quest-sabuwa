@@ -82,8 +82,17 @@ export class GramQuestDB {
     this.setStorageItem('gq_referrals', referrals);
   }
 
-  static getWithdrawals(): Withdrawal[] {
-    return this.getStorageItem<Withdrawal[]>('gq_withdrawals', []);
+  static async getWithdrawals(telegramId: string): Promise<Withdrawal[]> {
+
+  const response = await fetch(
+    `https://gram-quest-api.raheeumar9.workers.dev/api/withdrawals/${telegramId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to load withdrawals");
+  }
+
+  return await response.json();
   }
 
   static async getTasks(): Promise<Task[]> {
