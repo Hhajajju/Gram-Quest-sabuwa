@@ -116,7 +116,11 @@ if (updatedUser) {
     const loadedTasks = await GramQuestDB.getTasks();
 setTasks(loadedTasks);
     setCompletedTasksCount(GramQuestDB.getUserDailyTaskCount(currentUser.telegramId));
-    setNotifications(GramQuestDB.getBotNotifications().filter(n => n.recipientId === currentUser.telegramId || n.recipientId === 'all'));
+    const userNotifications = await GramQuestDB.getBotNotifications(
+  currentUser.telegramId
+);
+
+setNotifications(userNotifications);
     
     // Withdrawals
     const userWithdrawals = await GramQuestDB.getWithdrawals(
