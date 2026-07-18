@@ -679,74 +679,48 @@ return (
               </div>
 
               {/* OFFICIAL ADSGRAM SECURE TASK CARD */}
-<div className="flex flex-col items-center justify-center py-6 px-4 bg-gradient-to-br from-[#10172e] to-[#0d1222] rounded-2xl border border-blue-500/10 space-y-4 text-center">
-  <div className="text-center">
-    <h4 className="font-extrabold text-sm text-yellow-500 uppercase tracking-wider mb-1">
-      Official Adsgram Reward Center
-    </h4>
-
-    <p className="text-[10px] text-gray-400 max-w-xs mx-auto">
-      Complete official Adsgram tasks: join channel, open bot, visit website, sign up.
-    </p>
-  </div>
-
-  {isVerifying ? (
-    <div className="flex flex-col items-center justify-center p-6 space-y-3">
-      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-
-      <p className="text-xs text-blue-400 font-bold animate-pulse">
-        Checking.... Make sure you completed the task properly...
-      </p>
-    </div>
-  ) : (
-    <div className="w-full flex justify-center py-2">
-      <adsgram-task
-        ref={setAdsgramRef}
-        data-block-id="task-38736"
-        data-debug="false"
-        data-debug-console="false"
-        className="task"
-      />
-    </div>
-  )}
-
-  <div className="text-[10px] text-gray-400 flex flex-wrap gap-2 items-center justify-center bg-black/20 px-3 py-1.5 rounded-lg border border-gray-800/40">
-
-    <span className="flex items-center space-x-1">
-      <span className="font-semibold text-gray-500">
-        Block ID:
-      </span>
-      <code className="text-blue-400 font-mono">
-        task-38736
-      </code>
-    </span>
-
-    <span>•</span>
-
-    <span className="flex items-center space-x-1">
-      <span className="font-semibold text-gray-500">
-        Daily limit:
-      </span>
-      <span className="text-yellow-500 font-bold">
-        {settings.adsgramDailyLimit || 10}
-      </span>
-    </span>
-
-    <span>•</span>
-
-    <span className="flex items-center space-x-1">
-      <span className="font-semibold text-gray-500">
-        Yield:
-      </span>
-
-      <span className="text-yellow-400 font-bold">
-        +{(settings.adsgramReward || 3000).toLocaleString()} Coins
-      </span>
-    </span>
-
-  </div>
-</div>
-
+              <div className="flex flex-col items-center justify-center py-6 px-4 bg-gradient-to-br from-[#10172e] to-[#0d1222] rounded-2xl border border-blue-500/10 space-y-4 text-center">
+                <div className="text-center">
+                  <h4 className="font-extrabold text-sm text-yellow-500 uppercase tracking-wider mb-1">Official Adsgram Reward Center</h4>
+                  <p className="text-[10px] text-gray-400 max-w-xs mx-auto">
+                    Complete Adsgram task to unlock rewards,make sure you perform the task properly.
+                  </p>
+                </div>
+                
+                {isVerifying ? (
+                  <div className="flex flex-col items-center justify-center p-6 space-y-3">
+                    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    <p className="text-xs text-blue-400 font-bold animate-pulse">Task verificatin in progress...</p>
+                  </div>
+                ) : (
+                  <div className="w-full flex justify-center py-2">
+                    {React.createElement('adsgram-task', {
+                      ref: setAdsgramRef,
+                      'data-block-id': "task-38284",
+                      'data-debug': "false",
+                      'data-debug-console': "false",
+                      class: "task"
+                    })}
+                  </div>
+                )}
+                
+                <div className="text-[10px] text-gray-400 flex flex-wrap gap-2 items-center justify-center bg-black/20 px-3 py-1.5 rounded-lg border border-gray-800/40">
+                  <span className="flex items-center space-x-1">
+                    <span className="font-semibold text-gray-500">Block ID:</span>
+                    <code className="text-blue-400 font-mono">task-38284</code>
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center space-x-1">
+                    <span className="font-semibold text-gray-500">Daily limit:</span>
+                    <span className="text-yellow-500 font-bold">{settings.adsgramDailyLimit || 10}</span>
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center space-x-1">
+                    <span className="font-semibold text-gray-500">Yield:</span>
+                    <span className="text-yellow-400 font-bold">+{ (settings.adsgramReward || 3000).toLocaleString() } Coins</span>
+                  </span>
+                </div>
+              </div>
               {/* ACTIVE PARTNER TASKS LIST */}
               <section className="space-y-3">
                 <div className="flex justify-between items-center px-1">
