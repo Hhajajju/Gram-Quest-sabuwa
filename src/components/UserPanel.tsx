@@ -420,15 +420,6 @@ const handleClaimDailyBonus = async () => {
       setWithdrawError(res.message);
     }
   };
-if (!settings) {
-  return (
-    <div className="p-5 text-white">
-      Loading...
-      <br />
-      Check console
-    </div>
-  );
-}
 
 
 return (
