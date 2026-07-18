@@ -694,7 +694,7 @@ return (
                     {React.createElement('adsgram-task', {
                       ref: setAdsgramRef,
                       'data-block-id': "task-38736",
-                      'data-debug': "true",
+                      'data-debug': "false",
                       'data-debug-console': "false",
                       class: "task"
                     })}
