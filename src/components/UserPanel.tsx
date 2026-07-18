@@ -48,7 +48,6 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   const [spinAngle, setSpinAngle] = useState(0);
   const [claimableSpinReward, setClaimableSpinReward] = useState<number | null>(null);
   const [isSpinAdCompleted, setIsSpinAdCompleted] = useState(false);
-  const [showAdOverlay, setShowAdOverlay] = useState(false);
   const [spinHistory, setSpinHistory] = useState<SpinHistory[]>([]);
 
   // Conversion States
