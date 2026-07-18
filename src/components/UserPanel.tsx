@@ -691,13 +691,13 @@ return (
                   </div>
                 ) : (
                   <div className="w-full flex justify-center py-2">
-                    {React.createElement('adsgram-task', {
-                      ref: setAdsgramRef,
-                      'data-block-id': "task-38736",
-                      'data-debug': "false",
-                      'data-debug-console': "false",
-                      class: "task"
-                    })}
+    {<adsgram-task
+  ref={setAdsgramRef}
+  data-block-id="task-38736"
+  data-debug="false"
+  data-debug-console="false"
+  className="task"
+/>
                   </div>
                 )}
                 
