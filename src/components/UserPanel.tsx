@@ -734,7 +734,7 @@ return (
     </span>
   </div>
 </div>
- })}             {/* ACTIVE PARTNER TASKS LIST */}
+              {/* ACTIVE PARTNER TASKS LIST */}
               <section className="space-y-3">
                 <div className="flex justify-between items-center px-1">
                   <h3 className="font-black text-xs tracking-tight uppercase text-blue-400 flex items-center space-x-1.5">
