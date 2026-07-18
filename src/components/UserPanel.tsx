@@ -41,7 +41,75 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   const [copiedLink, setCopiedLink] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  
+  const adsgramRef = useRef<any>(null);
+
+
+useEffect(() => {
+
+  const adsgramElement = adsgramRef.current;
+
+  if (!adsgramElement) return;
+
+
+  const handleAdsgramComplete = async () => {
+
+    try {
+
+      setIsVerifying(true);
+
+      const result = await GramQuestDB.completeAdsgramTask(
+        currentUser.telegramId,
+        "task-38736"
+      );
+
+
+      if (result.success) {
+
+        alert("🎉 AdsGram completed! Reward added.");
+
+        const updatedUser = await GramQuestDB.getUser(
+          currentUser.telegramId
+        );
+
+        onUpdateUser(updatedUser);
+
+      } else {
+
+        alert(result.message);
+
+      }
+
+
+    } catch(error) {
+
+      console.error("AdsGram error:", error);
+
+    } finally {
+
+      setIsVerifying(false);
+
+    }
+
+  };
+
+
+  adsgramElement.addEventListener(
+    "adsgram:complete",
+    handleAdsgramComplete
+  );
+
+
+  return () => {
+
+    adsgramElement.removeEventListener(
+      "adsgram:complete",
+      handleAdsgramComplete
+    );
+
+  };
+
+
+}, [currentUser.telegramId]);
   // Spin Wheel States
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState<number | null>(null);
