@@ -266,14 +266,7 @@ const sorted = [...users].sort(
     }
   };
 
-  // Simulation timer for partner tasks
-  useEffect(() => {
-    if (watchingAd && adSeconds > 0) {
-      const adTimer = setTimeout(() => {
-        setAdSeconds(prev => prev - 1);
-      }, 1000);
-      return () => clearTimeout(adTimer);
-    } else if (watchingAd && adSeconds === 0) {
+  
       // Complete the normal task
       const t = GramQuestDB.getTasks().find(tk => tk.title === watchingAd.taskName);
       if (t) {
