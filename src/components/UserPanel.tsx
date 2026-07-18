@@ -126,9 +126,11 @@ setTasks(loadedTasks);
 setWithdrawals(userWithdrawals);
 
     // Referrals
-    const allRefs = GramQuestDB.getReferrals();
-    const userRefs = allRefs.filter(r => r.referrerId === currentUser.telegramId);
-    setReferralsList(userRefs);
+    const userRefs = await GramQuestDB.getReferrals(
+  currentUser.telegramId
+);
+
+setReferralsList(userRefs);
 
     // Count verified refs in last 24h
     const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
