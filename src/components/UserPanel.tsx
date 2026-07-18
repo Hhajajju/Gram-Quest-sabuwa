@@ -135,7 +135,10 @@ setTasks(loadedTasks);
     setSpinHistory(GramQuestDB.getSpinHistory().filter(h => h.userId === currentUser.telegramId));
 
     // Leaderboard
-    const sorted = [...users].sort((a, b) => b.verifiedReferrals - a.verifiedReferrals);
+    const users = await GramQuestDB.getUsers();
+const sorted = [...users].sort(
+(a,b)=> b.verifiedReferrals - a.verifiedReferrals
+);
     setLeaderboardUsers(sorted);
   };
 
