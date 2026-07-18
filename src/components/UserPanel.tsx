@@ -117,10 +117,13 @@ if (updatedUser) {
 
     const loadedTasks = await GramQuestDB.getTasks();
 setTasks(loadedTasks);
-    setCompletedTasksCount(GramQuestDB.getUserDailyTaskCount(currentUser.telegramId));
-    const userNotifications = await GramQuestDB.getBotNotifications(
-  currentUser.telegramId
+    const progressRes = await fetch(
+  `https://gram-quest-api.raheeumar9.workers.dev/api/task-progress/${currentUser.telegramId}`
 );
+
+const progressData = await progressRes.json();
+
+setCompletedTasksCount(progressData.completed);
 
 setNotifications(userNotifications);
     
