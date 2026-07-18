@@ -283,8 +283,22 @@ const sorted = [...users].sort(
   }, [watchingAd, adSeconds]);
 
   // 3. Claim 30 Task Daily Bonus
-  const handleClaimDailyBonus = () => {
-    const res = GramQuestDB.claimDailyBonus(currentUser.telegramId);
+  const res = await fetch(
+"https://gram-quest-api.raheeumar9.workers.dev/api/daily-bonus",
+{
+ method:"POST",
+ headers:{
+ "Content-Type":"application/json"
+ },
+ body:JSON.stringify({
+ telegramId: currentUser.telegramId
+ })
+}
+);
+
+const data = await res.json();
+
+onUpdateUser(data.user);
     if (res.success) {
       refreshData();
       alert(res.message);
