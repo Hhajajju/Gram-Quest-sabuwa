@@ -418,8 +418,15 @@ const handleClaimDailyBonus = async () => {
     }
   };
 if (!settings) {
-  return <div className="p-5 text-white">Loading...</div>;
+  return (
+    <div className="p-5 text-white">
+      Loading...
+      <br />
+      Check console
+    </div>
+  );
 }
+
 
 return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0b0f19] text-white' : 'bg-gray-50 text-gray-900'} pb-24 font-sans transition-colors duration-300`}>
