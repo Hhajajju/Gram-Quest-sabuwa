@@ -265,39 +265,7 @@ const sorted = [...users].sort(
       element.addEventListener('onTooLongSession', handleTooLongSession);
     }
   };
-
-  
-      // Complete the normal task
-      const t = GramQuestDB.getTasks().find(tk => tk.title === watchingAd.taskName);
-      if (t) {
-        try {
-  const response = await fetch(
-    "https://gram-quest-api.raheeumar9.workers.dev/api/add-coins",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        telegramId: currentUser.telegramId,
-        amount: t.reward,
-      }),
-    }
-  );
-
-  const updatedUser = await response.json();
-
-  onUpdateUser(updatedUser);
-
-  alert(`🎉 Task completed! +${t.reward} Coins added.`);
-  
-} catch (error) {
-  alert("Failed to add reward. Please try again.");
-        }
-      }
-      setWatchingAd(null);
-    }
-  }, [watchingAd, adSeconds]);
+      
 
 // 3. Claim 30 Task Daily Bonus
 const handleClaimDailyBonus = async () => {
