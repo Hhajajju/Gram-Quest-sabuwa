@@ -159,7 +159,11 @@ const sorted = [...users].sort(
 (a,b)=> b.verifiedReferrals - a.verifiedReferrals
 );
     setLeaderboardUsers(sorted);
-  };
+
+  } catch (error) {
+    console.error("Refresh data failed:", error);
+  }
+};
 
   // 1. Copy referral link
   const handleCopyLink = () => {
