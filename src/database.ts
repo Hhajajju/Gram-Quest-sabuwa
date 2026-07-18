@@ -184,34 +184,35 @@ export class GramQuestDB {
   }
 
   // Quick helper to log notification
-  static logBotNotification(
+  static async logBotNotification(
   recipientId: string,
   recipientName: string,
   message: string
-): void {
-  this.getBotNotifications(recipientId)
-    .then((notifications) => {
-      const newNotif: BotNotification = {
-        id: 'notif_' + Math.random().toString(36).substr(2, 9),
-        recipientId,
-        recipientName,
-        message,
-        timestamp: new Date().toISOString()
-      };
+): Promise<void> {
 
-      notifications.unshift(newNotif);
-      this.saveBotNotifications(notifications);
+  try {
+    const notifications = await this.getBotNotifications(recipientId);
 
-      console.log(
-        `[Telegram Bot to ${recipientName} (${recipientId})]: ${message}`
-      );
-    })
-    .catch((error) => {
-      console.error("Failed to save bot notification:", error);
-    });
+    const newNotif: BotNotification = {
+      id: 'notif_' + Math.random().toString(36).substr(2, 9),
+      recipientId,
+      recipientName,
+      message,
+      timestamp: new Date().toISOString()
+    };
+
+    notifications.unshift(newNotif);
+
+    this.saveBotNotifications(notifications);
+
+    console.log(
+      `[Telegram Bot to ${recipientName} (${recipientId})]: ${message}`
+    );
+
+  } catch (error) {
+    console.error("Failed to save bot notification:", error);
   }
-    
-
+  }
   // --- CORE LOGIC OPERATIONS ---
 
   // 1. User login (or creation)
