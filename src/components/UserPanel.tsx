@@ -119,7 +119,11 @@ setTasks(loadedTasks);
     setNotifications(GramQuestDB.getBotNotifications().filter(n => n.recipientId === currentUser.telegramId || n.recipientId === 'all'));
     
     // Withdrawals
-    setWithdrawals(GramQuestDB.getWithdrawals().filter(w => w.userId === currentUser.telegramId));
+    const userWithdrawals = await GramQuestDB.getWithdrawals(
+  currentUser.telegramId
+);
+
+setWithdrawals(userWithdrawals);
 
     // Referrals
     const allRefs = GramQuestDB.getReferrals();
