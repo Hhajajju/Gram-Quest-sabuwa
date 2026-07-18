@@ -306,6 +306,27 @@ export class GramQuestDB {
 
   return await response.json();
   }
+  static async completeAdsgramTask(
+  telegramId: string,
+  blockId: string
+): Promise<any> {
+
+  const response = await fetch(
+    "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
+    {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        telegramId,
+        blockId
+      })
+    }
+  );
+
+  return await response.json();
+  }
 
   // 4. Claim 30 Daily Task Bonus (including Referral verification trigger)
   static claimDailyBonus(telegramId: string): { success: boolean; reward: number; message: string } {
