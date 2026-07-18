@@ -5,16 +5,16 @@ const DEFAULT_SETTINGS: AppSettings = {
   conversionRate: 1000000, // 1,000,000 Coins = 1 Gram
   minConversion: 50000, // 50,000 Coins minimum
   maxConversion: 100000000,
-  minWithdrawal: 10, // 10 Gram minimum
-  maxWithdrawal: 1000, // 1000 Gram maximum
+  minWithdrawal: 0.5, // 0.5 Gram minimum
+  maxWithdrawal: 2, // 2 Gram maximum
   withdrawalFee: 10, // 10% fee
   botApiKey: '7190827361:AAH8a9K_UjdJ0f_pLaK891h2zP9q02LkdEo',
   botUsername: 'GramQuestBot',
-  welcomeMessage: 'Welcome to Gram Quest! 🎉 Complete Adsgram tasks, spin the wheel, and refer friends to earn Coins and convert them to withdrawable Gram!',
+  welcomeMessage: 'Welcome to Gram Quest! 🎉 Complete tasks, spin the wheel, and refer friends to earn Coins and convert them to Gram!',
   dailyTaskLimit: 30,
   supportUsername: 'gramquest_support_admin',
   adsgramReward: 3000,
-  adsgramDailyLimit: 10
+  adsgramDailyLimit: 30
 };
 
 const DEFAULT_TASKS: Task[] = [
