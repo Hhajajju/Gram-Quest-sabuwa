@@ -1438,7 +1438,7 @@ return (
               <Coins className="w-10 h-10 animate-bounce" />
             </div>
             <div>
-              <h3 className="font-extrabold text-sm text-white">Gigapub Verification Partner</h3>
+              <h3 className="font-extrabold text-sm text-white">Ad Verification Partner</h3>
               <p className="text-[11px] text-yellow-500 font-bold">Verifying spin results...</p>
             </div>
             <div className="w-32 h-1 rounded-full bg-gray-800 overflow-hidden">
