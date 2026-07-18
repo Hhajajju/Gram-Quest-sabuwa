@@ -74,8 +74,17 @@ export class GramQuestDB {
     this.setStorageItem('gq_earnings', earnings);
   }
 
-  static getReferrals(): Referral[] {
-    return this.getStorageItem<Referral[]>('gq_referrals', []);
+  static async getReferrals(telegramId: string): Promise<Referral[]> {
+
+  const response = await fetch(
+    `https://gram-quest-api.raheeumar9.workers.dev/api/referrals/${telegramId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to load referrals");
+  }
+
+  return await response.json();
   }
 
   static saveReferrals(referrals: Referral[]): void {
