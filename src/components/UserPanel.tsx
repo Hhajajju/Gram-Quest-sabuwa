@@ -707,7 +707,7 @@ return (
         className: "task"
       
     </div>
-  )}
+  
 
   <div className="text-[10px] text-gray-400 flex flex-wrap gap-2 items-center justify-center bg-black/20 px-3 py-1.5 rounded-lg border border-gray-800/40">
     <span className="flex items-center space-x-1">
