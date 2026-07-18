@@ -146,10 +146,18 @@ export class GramQuestDB {
   }
 
   // Simulated Telegram Bot Notifications log
-  static getBotNotifications(): BotNotification[] {
-    return this.getStorageItem<BotNotification[]>('gq_bot_notifications', []);
+  static async getBotNotifications(telegramId: string): Promise<BotNotification[]> {
+
+  const response = await fetch(
+    `https://gram-quest-api.raheeumar9.workers.dev/api/notifications/${telegramId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to load notifications");
   }
 
+  return await response.json();
+  }
   static saveBotNotifications(notifications: BotNotification[]): void {
     this.setStorageItem('gq_bot_notifications', notifications);
   }
