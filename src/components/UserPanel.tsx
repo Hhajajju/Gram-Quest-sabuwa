@@ -109,7 +109,7 @@ useEffect(() => {
   };
 
 
-}, [currentUser.telegramId]);
+}, [currentUser.telegramId, activeTab]);
   // Spin Wheel States
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState<number | null>(null);
