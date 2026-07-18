@@ -705,7 +705,7 @@ return (
         "data-debug": "false",
         "data-debug-console": "false",
         className: "task"
-      })}
+      
     </div>
   )}
 
