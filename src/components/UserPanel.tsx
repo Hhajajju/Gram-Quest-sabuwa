@@ -138,7 +138,11 @@ setReferralsList(userRefs);
     setDailyReferralCount(verifiedLast24h);
 
     // Spin History
-    setSpinHistory(GramQuestDB.getSpinHistory().filter(h => h.userId === currentUser.telegramId));
+    const history = await GramQuestDB.getSpinHistory(
+  currentUser.telegramId
+);
+
+setSpinHistory(history);
 
     // Leaderboard
     const users = await GramQuestDB.getUsers();
