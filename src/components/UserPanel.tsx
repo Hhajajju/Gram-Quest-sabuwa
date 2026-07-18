@@ -696,7 +696,7 @@ return (
                   <div className="w-full flex justify-center py-2">
                     {React.createElement('adsgram-task', {
                       ref: setAdsgramRef,
-                      'data-block-id': "task-38284",
+                      'data-block-id': "task-38736",
                       'data-debug': "false",
                       'data-debug-console': "false",
                       class: "task"
