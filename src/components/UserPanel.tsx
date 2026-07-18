@@ -694,14 +694,13 @@ return (
                   </div>
                 ) : (
                   <div className="w-full flex justify-center py-2">
-    {<adsgram-task
+    <adsgram-task
   ref={setAdsgramRef}
   data-block-id="task-38736"
   data-debug="false"
   data-debug-console="false"
   className="task"
-/>
-                  </div>
+/>                  </div>
                 )}
                 
                 <div className="text-[10px] text-gray-400 flex flex-wrap gap-2 items-center justify-center bg-black/20 px-3 py-1.5 rounded-lg border border-gray-800/40">
