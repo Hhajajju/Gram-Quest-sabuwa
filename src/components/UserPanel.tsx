@@ -102,9 +102,7 @@ setSettings(appSettings);
     // Reload user from Cloudflare D1 to get accurate balances
 const updatedUser = await GramQuestDB.getUser(currentUser.telegramId);
 
-if (updatedUser) {
-  onUpdateUser(updatedUser);
-}
+
     if (updatedUser) {
       onUpdateUser(updatedUser);
     }
