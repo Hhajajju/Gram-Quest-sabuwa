@@ -99,6 +99,9 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   const refreshData = async () => {
   try {
     const appSettings = await GramQuestDB.getSettings();
+
+console.log("SETTINGS FROM DATABASE:", appSettings);
+
 setSettings(appSettings);
     // Reload user from Cloudflare D1 to get accurate balances
 const updatedUser = await GramQuestDB.getUser(currentUser.telegramId);
