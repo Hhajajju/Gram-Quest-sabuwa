@@ -1420,42 +1420,7 @@ const handleClaimDailyBonus = async () => {
         </AnimatePresence>
       </main>
 
-      {/* ADSGRAM AD WATCHING SIMULATION OVERLAY */}
-      <AnimatePresence>
-        {watchingAd && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-6 text-center space-y-4"
-          >
-            <div className="bg-blue-600/10 p-5 rounded-full border border-blue-500/30 animate-pulse text-blue-400">
-              <Tv className="w-12 h-12" />
-            </div>
-            <div className="space-y-1 max-w-md">
-              <h3 className="font-black text-base text-white tracking-tight">Adsgram Video Advertisement</h3>
-              <p className="text-xs text-blue-400 font-bold">{watchingAd.taskName}</p>
-              <p className="text-xs text-gray-400">Sponsored Ads keeping the Gram Quest project alive!</p>
-            </div>
-
-            <div className="space-y-2 w-full max-w-xs pt-4">
-              <div className="flex justify-between items-center text-xs">
-                <span className="text-gray-400 font-semibold">Verifying Task Status</span>
-                <span className="text-yellow-500 font-black">{adSeconds}s Left</span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-gray-800 overflow-hidden">
-                <div 
-                  className="bg-blue-500 h-full rounded-full transition-all duration-1000"
-                  style={{ width: `${(adSeconds / 5) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            <p className="text-[10px] text-gray-500">Do not close this panel. Coins will be deposited automatically upon verification.</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      
       {/* GIGAPUB SPONSOR OVERLAY */}
       <AnimatePresence>
         {showAdOverlay && (
