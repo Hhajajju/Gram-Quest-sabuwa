@@ -452,7 +452,7 @@ const handleClaimDailyBonus = async () => {
 
           {/* Support Link */}
           <a 
-            href={`https://t.me/${settings.supportUsername}`}
+            href={settings ? `https://t.me/${settings.supportUsername}` : '#'}
             target="_blank"
             rel="noopener noreferrer"
             className={`p-2 rounded-full ${theme === 'dark' ? 'bg-gray-800 text-gray-300 hover:bg-gray-750' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} transition-all`}
