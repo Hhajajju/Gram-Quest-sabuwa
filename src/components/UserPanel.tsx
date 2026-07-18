@@ -644,9 +644,9 @@ const handleClaimDailyBonus = async () => {
                 </div>
                 <ul className="space-y-2 text-[11px] opacity-80 text-left list-disc list-inside">
                   <li>Fake task completion or auto-bots is strictly forbidden.</li>
-                  <li>Fake referrals will result in complete account and balance ban.</li>
+                  <li>Fake referrals will result in balance deducted and account ban.</li>
                   <li>One user is allowed only one account. No multiple-account farming.</li>
-                  <li>Users must properly join channels and open bots when requested.</li>
+                  <li>Users must properly join channels and open bots when requested for the Adsgram task.</li>
                   <li>Failure to adhere properly can lead to admin rejection of withdrawals.</li>
                 </ul>
               </section>
@@ -678,14 +678,14 @@ const handleClaimDailyBonus = async () => {
                 <div className="text-center">
                   <h4 className="font-extrabold text-sm text-yellow-500 uppercase tracking-wider mb-1">Official Adsgram Reward Center</h4>
                   <p className="text-[10px] text-gray-400 max-w-xs mx-auto">
-                    Complete tasks served directly by the official Adsgram SDK. Your reward will be verified securely through our Cloudflare Worker backend.
+                    Complete official Adsgram task,Join channel,open bot, visit website,sign up.
                   </p>
                 </div>
                 
                 {isVerifying ? (
                   <div className="flex flex-col items-center justify-center p-6 space-y-3">
                     <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-xs text-blue-400 font-bold animate-pulse">Contacting Cloudflare Worker...</p>
+                    <p className="text-xs text-blue-400 font-bold animate-pulse">Checking....Make sure you completed the task properly...</p>
                   </div>
                 ) : (
                   <div className="w-full flex justify-center py-2">
@@ -702,7 +702,7 @@ const handleClaimDailyBonus = async () => {
                 <div className="text-[10px] text-gray-400 flex flex-wrap gap-2 items-center justify-center bg-black/20 px-3 py-1.5 rounded-lg border border-gray-800/40">
                   <span className="flex items-center space-x-1">
                     <span className="font-semibold text-gray-500">Block ID:</span>
-                    <code className="text-blue-400 font-mono">task-38284</code>
+                    <code className="text-blue-400 font-mono">task-38736</code>
                   </span>
                   <span>•</span>
                   <span className="flex items-center space-x-1">
@@ -875,7 +875,7 @@ const handleClaimDailyBonus = async () => {
                     
                     <div className="border-t border-dashed border-blue-500/20 pt-3.5 space-y-3.5">
                       <p className="text-[11px] opacity-75">
-                        This reward is pending. You must watch the Gigapubs advertisement to unlock the Claim Reward button.
+                        This reward is pending. You must watch advertisement to unlock the Claim Reward button.
                       </p>
 
                       <div className="grid grid-cols-1 gap-2.5">
@@ -893,7 +893,7 @@ const handleClaimDailyBonus = async () => {
                         >
                           {isSpinAdCompleted ? (
                             <>
-                              <span>✅ GIGAPUBS AD COMPLETED</span>
+                              <span>✅ AD COMPLETED</span>
                             </>
                           ) : isVerifying ? (
                             <>
@@ -902,7 +902,7 @@ const handleClaimDailyBonus = async () => {
                             </>
                           ) : (
                             <>
-                              <span>📺 WATCH GIGAPUBS AD TO UNLOCK</span>
+                              <span>📺 WATCH AD TO UNLOCK</span>
                             </>
                           )}
                         </button>
