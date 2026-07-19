@@ -531,7 +531,22 @@ const handleClaimDailyBonus = async () => {
       return;
     }
 
-    const res = GramQuestDB.requestWithdrawal(currentUser.telegramId, amount, tonAddress);
+    const response = await fetch(
+  "https://gram-quest-api.raheeumar9.workers.dev/api/withdraw",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      telegramId: currentUser.telegramId,
+      amount: amount,
+      tonAddress: tonAddress
+    })
+  }
+);
+
+const res = await response.json();
     if (res.success) {
       setWithdrawSuccess(res.message);
       setWithdrawAmount('');
