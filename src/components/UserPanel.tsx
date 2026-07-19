@@ -268,7 +268,8 @@ const sorted = [...users].sort(
     setLeaderboardUsers(sorted);
 
   } catch (error) {
-    console.error("Refresh data failed:", error);
+  console.error("Refresh data failed:", error);
+  alert("Refresh data failed: " + error.message);
   }
 };
 
