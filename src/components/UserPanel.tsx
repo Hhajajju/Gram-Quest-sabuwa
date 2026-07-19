@@ -244,9 +244,11 @@ const userWithdrawals = await withdrawalsRes.json();
 setWithdrawals(userWithdrawals);
 
     // Referrals
-    const userRefs = await GramQuestDB.getReferrals(
-  currentUser.telegramId
+    const refsRes = await fetch(
+  `https://gram-quest-api.raheeumar9.workers.dev/api/referrals/${currentUser.telegramId}`
 );
+
+const userRefs = await refsRes.json();
 
 setReferralsList(userRefs);
 
