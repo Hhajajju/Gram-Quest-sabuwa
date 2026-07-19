@@ -59,7 +59,7 @@ useEffect(() => {
 
       const result = await GramQuestDB.completeAdsgramTask(
         currentUser.telegramId,
-        "task-38736"
+        "task-38672"
       );
 
 
@@ -770,7 +770,7 @@ return (
 
       {React.createElement('adsgram-task', {
         ref: adsgramRef,
-        'data-block-id': "task-38736",
+        'data-block-id': "task-38672",
         'data-debug': "false",
         'data-debug-console': "false",
         class: "task"
