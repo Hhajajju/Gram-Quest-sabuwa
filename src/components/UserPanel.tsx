@@ -23,7 +23,7 @@ import {
   CheckSquare
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GramQuestDB, BotNotification } from '../database';
+import { BotNotification } from '../database';
 import { User, Task, Referral, Withdrawal, SpinHistory, AppSettings } from '../types';
 
 interface UserPanelProps {
