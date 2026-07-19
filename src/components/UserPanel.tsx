@@ -43,13 +43,14 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   const [isVerifying, setIsVerifying] = useState(false);
   const adsgramRef = useRef<any>(null);
 
-
 useEffect(() => {
 
   const adsgramElement = adsgramRef.current;
 
-  if (!adsgramElement) return;
-
+  if (!adsgramElement) {
+    console.log("AdsGram element not ready");
+    return;
+  }
 
   const handleAdsgramComplete = async () => {
 
@@ -71,31 +72,25 @@ useEffect(() => {
         }
       );
 
-
       const result = await response.json();
-
 
       if (result.success) {
 
         alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
 
-
         const updatedUser = await fetch(
           `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
         );
 
-
         const userData = await updatedUser.json();
 
         onUpdateUser(userData);
-
 
       } else {
 
         alert(result.message);
 
       }
-
 
     } catch(error) {
 
@@ -124,6 +119,7 @@ useEffect(() => {
     );
 
   };
+
 
 }, [currentUser.telegramId]);
 
