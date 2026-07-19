@@ -527,6 +527,9 @@ const handleClaimDailyBonus = async () => {
       setWithdrawError(res.message);
     }
   };
+  if (!currentUser) {
+  return <div className="p-5 text-white">No user found</div>;
+  }
 if (!settings) {
   return (
     <div className="p-5 text-white">
