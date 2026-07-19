@@ -337,7 +337,21 @@ setLeaderboardUsers([]);
     const blockId = event.detail || 'task-38736';
     setIsVerifying(true);
     try {
-      const res = await GramQuestDB.verifyAdsgramTaskOnBackend(currentUser.telegramId, blockId);
+      const response = await fetch(
+  "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      telegramId: currentUser.telegramId,
+      blockId: blockId
+    })
+  }
+);
+
+const res = await response.json();
       if (res.success) {
         refreshData();
         alert(`🎉 Reward Confirmed! +${res.reward.toLocaleString()} Coins added to your balance.`);
