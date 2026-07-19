@@ -57,21 +57,38 @@ useEffect(() => {
 
       setIsVerifying(true);
 
-      const result = await GramQuestDB.completeAdsgramTask(
-        currentUser.telegramId,
-        "task-38672"
+      const response = await fetch(
+        "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            telegramId: currentUser.telegramId,
+            blockId: "task-38672"
+          })
+        }
       );
+
+
+      const result = await response.json();
 
 
       if (result.success) {
 
-        alert("🎉 AdsGram completed! Reward added.");
+        alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
 
-        const updatedUser = await GramQuestDB.getUser(
-          currentUser.telegramId
+
+        const updatedUser = await fetch(
+          `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
         );
 
-        onUpdateUser(updatedUser);
+
+        const userData = await updatedUser.json();
+
+        onUpdateUser(userData);
+
 
       } else {
 
@@ -108,6 +125,7 @@ useEffect(() => {
 
   };
 
+}, [currentUser.telegramId]);
 
 }, [currentUser.telegramId, activeTab]);
   // Spin Wheel States
