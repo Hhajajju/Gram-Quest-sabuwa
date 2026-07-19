@@ -45,84 +45,91 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
 
 useEffect(() => {
 
-  const adsgramElement = adsgramRef.current;
+  const timer = setTimeout(() => {
 
-  if (!adsgramElement) {
-    console.log("AdsGram element not ready");
-    return;
-  }
+    const adsgramElement = adsgramRef.current;
 
-  const handleAdsgramComplete = async () => {
+    if (!adsgramElement) {
+      console.log("AdsGram element not ready");
+      return;
+    }
 
-    try {
 
-      setIsVerifying(true);
+    const handleAdsgramComplete = async () => {
 
-      const response = await fetch(
-        "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            telegramId: currentUser.telegramId,
-            blockId: "task-38672"
-          })
-        }
-      );
+      try {
 
-      const result = await response.json();
+        setIsVerifying(true);
 
-      if (result.success) {
-
-        alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
-
-        const updatedUser = await fetch(
-          `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
+        const response = await fetch(
+          "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              telegramId: currentUser.telegramId,
+              blockId: "task-38672"
+            })
+          }
         );
 
-        const userData = await updatedUser.json();
 
-        onUpdateUser(userData);
+        const result = await response.json();
 
-      } else {
 
-        alert(result.message);
+        if (result.success) {
+
+          alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
+
+
+          const updatedUser = await fetch(
+            `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
+          );
+
+
+          const userData = await updatedUser.json();
+
+          onUpdateUser(userData);
+
+
+        } else {
+
+          alert(result.message);
+
+        }
+
+
+      } catch(error) {
+
+        console.error("AdsGram error:", error);
+
+      } finally {
+
+        setIsVerifying(false);
 
       }
 
-    } catch(error) {
-
-      console.error("AdsGram error:", error);
-
-    } finally {
-
-      setIsVerifying(false);
-
-    }
-
-  };
+    };
 
 
-  adsgramElement.addEventListener(
-    "adsgram:complete",
-    handleAdsgramComplete
-  );
-
-
-  return () => {
-
-    adsgramElement.removeEventListener(
+    adsgramElement.addEventListener(
       "adsgram:complete",
       handleAdsgramComplete
     );
 
-  };
+
+  }, 1000);
+
+
+  return () => clearTimeout(timer);
 
 
 }, [currentUser.telegramId]);
 
+
+    
   // Spin Wheel States
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState<number | null>(null);
