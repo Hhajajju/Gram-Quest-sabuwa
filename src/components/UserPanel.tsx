@@ -261,11 +261,7 @@ setReferralsList(userRefs);
 setSpinHistory(history);
 
     // Leaderboard
-    const users = await GramQuestDB.getUsers();
-const sorted = [...users].sort(
-(a,b)=> b.verifiedReferrals - a.verifiedReferrals
-);
-    setLeaderboardUsers(sorted);
+setLeaderboardUsers([]);
 
   } catch (error) {
   console.error("Refresh data failed:", error);
