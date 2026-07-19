@@ -235,9 +235,11 @@ setCompletedTasksCount(progressData.completed);
 setNotifications([]);
     
     // Withdrawals
-    const userWithdrawals = await GramQuestDB.getWithdrawals(
-  currentUser.telegramId
+    const withdrawalsRes = await fetch(
+  `https://gram-quest-api.raheeumar9.workers.dev/api/withdrawals/${currentUser.telegramId}`
 );
+
+const userWithdrawals = await withdrawalsRes.json();
 
 setWithdrawals(userWithdrawals);
 
