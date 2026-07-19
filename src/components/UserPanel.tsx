@@ -258,9 +258,11 @@ setReferralsList(userRefs);
     setDailyReferralCount(verifiedLast24h);
 
     // Spin History
-    const history = await GramQuestDB.getSpinHistory(
-  currentUser.telegramId
+    const historyRes = await fetch(
+  `https://gram-quest-api.raheeumar9.workers.dev/api/spin-history/${currentUser.telegramId}`
 );
+
+const history = await historyRes.json();
 
 setSpinHistory(history);
 
