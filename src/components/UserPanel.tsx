@@ -430,7 +430,21 @@ const handleClaimDailyBonus = async () => {
     setClaimableSpinReward(null);
     setIsSpinAdCompleted(false);
 
-    const res = GramQuestDB.spinWheel(currentUser.telegramId);
+    const response = await fetch(
+  "https://gram-quest-api.raheeumar9.workers.dev/api/spin",
+  {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      telegramId: currentUser.telegramId
+    })
+  }
+);
+
+
+const res = await response.json();
     if (res.success) {
       // Determine rotation angle
       // Rewards: 100, 500, 1000, 2000, 3000
