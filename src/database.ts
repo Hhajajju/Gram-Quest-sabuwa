@@ -669,7 +669,7 @@ export class GramQuestDB {
     if (!user) return { success: false, reward: 0, message: 'Backend verification error: User not found' };
     if (user.blocked) return { success: false, reward: 0, message: 'Backend verification error: Account is blocked' };
 
-    if (blockId !== 'task-38736') {
+    if (blockId !== 'task-38672') {
       return { success: false, reward: 0, message: 'Backend verification error: Invalid Adsgram Block ID' };
     }
 
