@@ -504,7 +504,21 @@ const handleClaimDailyBonus = async () => {
       return;
     }
 
-    const res = GramQuestDB.convertCoins(currentUser.telegramId, amount);
+    const response = await fetch(
+  "https://gram-quest-api.raheeumar9.workers.dev/api/convert",
+  {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      telegramId: currentUser.telegramId,
+      amount: amount
+    })
+  }
+);
+
+const res = await response.json();
     if (res.success) {
       setConversionSuccess(res.message);
       setCoinsToConvert('');
