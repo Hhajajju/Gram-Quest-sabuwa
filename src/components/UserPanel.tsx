@@ -45,9 +45,12 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
 
 useEffect(() => {
 
+  let adsgramElement: any;
+  let handleAdsgramComplete: any;
+
   const timer = setTimeout(() => {
 
-    const adsgramElement = adsgramRef.current;
+    adsgramElement = adsgramRef.current;
 
     if (!adsgramElement) {
       console.log("AdsGram element not ready");
@@ -55,7 +58,7 @@ useEffect(() => {
     }
 
 
-    const handleAdsgramComplete = async () => {
+    handleAdsgramComplete = async () => {
 
       try {
 
@@ -83,16 +86,13 @@ useEffect(() => {
 
           alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
 
-
           const updatedUser = await fetch(
             `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
           );
 
-
           const userData = await updatedUser.json();
 
           onUpdateUser(userData);
-
 
         } else {
 
@@ -123,12 +123,23 @@ useEffect(() => {
   }, 1000);
 
 
-  return () => clearTimeout(timer);
+  return () => {
+
+    clearTimeout(timer);
+
+    if (adsgramElement && handleAdsgramComplete) {
+
+      adsgramElement.removeEventListener(
+        "adsgram:complete",
+        handleAdsgramComplete
+      );
+
+    }
+
+  };
 
 
 }, [currentUser.telegramId]);
-
-
     
   // Spin Wheel States
   const [isSpinning, setIsSpinning] = useState(false);
