@@ -197,9 +197,13 @@ useEffect(() => {
 
   const refreshData = async () => {
   try {
-    const appSettings = await GramQuestDB.getSettings();
+    const settingsRes = await fetch(
+  "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
+);
 
-console.log("SETTINGS FROM DATABASE:", appSettings);
+const appSettings = await settingsRes.json();
+
+console.log("SETTINGS FROM CLOUDFLARE:", appSettings);
 
 setSettings(appSettings);
     // Reload user from Cloudflare D1 to get accurate balances
