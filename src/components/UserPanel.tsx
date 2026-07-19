@@ -207,7 +207,11 @@ console.log("SETTINGS FROM CLOUDFLARE:", appSettings);
 
 setSettings(appSettings);
     // Reload user from Cloudflare D1 to get accurate balances
-const updatedUser = await GramQuestDB.getUser(currentUser.telegramId);
+const userRes = await fetch(
+  `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
+);
+
+const updatedUser = await userRes.json();
 
 
     if (updatedUser) {
