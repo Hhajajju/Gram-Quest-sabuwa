@@ -164,18 +164,18 @@ useEffect(() => {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
 
   // Referrals State
-  const [referralsList, setReferralsList] = useState<Referral[]>([]);
-  const [dailyReferralCount, setDailyReferralCount] = useState(0);
+const [referralsList, setReferralsList] = useState<Referral[]>([]);
+const [dailyReferralCount, setDailyReferralCount] = useState(0);
 
-  // Leaderboard States
-  const [leaderboardUsers, setLeaderboardUsers] = useState<User[]>([]);
-  const [countdown, setCountdown] = useState({ days: 29, hours: 23, minutes: 59, seconds: 59 });
+// Leaderboard States
+const [leaderboardUsers, setLeaderboardUsers] = useState<User[]>([]);
+const [countdown, setCountdown] = useState({ days: 29, hours: 23, minutes: 59, seconds: 59 });
 
-  // Theme State (Internal to keep styling native)
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+// Theme State (Internal to keep styling native)
+const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
-  // Load initial data for user
-  useEffect(() => {
+// Load initial data for user
+useEffect(() => {
 
   console.log("UserPanel mounted");
 
@@ -186,82 +186,102 @@ useEffect(() => {
 
 }, [currentUser.telegramId, activeTab]);
 
-  const refreshData = async () => {
+
+const refreshData = async () => {
+
   try {
+
     const settingsRes = await fetch(
-  "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
-);
+      "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
+    );
 
-console.log("Settings HTTP:", settingsRes.status);
+    console.log("Settings HTTP:", settingsRes.status);
 
-const text = await settingsRes.text();
+    const text = await settingsRes.text();
 
-console.log("Settings response:", text);
+    console.log("Settings response:", text);
 
-const appSettings = JSON.parse(text);
+    const appSettings = JSON.parse(text);
 
-setSettings(appSettings);
+    setSettings(appSettings);
+
+
     console.log("GETTING USER");
+
     // Reload user from Cloudflare D1 to get accurate balances
-const userRes = await fetch(
-  `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
-);
+    const userRes = await fetch(
+      `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
+    );
 
-const updatedUser = await userRes.json();
-
+    const updatedUser = await userRes.json();
 
     if (updatedUser) {
       onUpdateUser(updatedUser);
     }
 
+
     const tasksRes = await fetch(
-  "https://gram-quest-api.raheeumar9.workers.dev/api/tasks"
-);
+      "https://gram-quest-api.raheeumar9.workers.dev/api/tasks"
+    );
 
-const loadedTasks = await tasksRes.json();
+    const loadedTasks = await tasksRes.json();
 
-setTasks(loadedTasks);
+    setTasks(loadedTasks);
+
+
     const progressRes = await fetch(
-  `https://gram-quest-api.raheeumar9.workers.dev/api/task-progress/${currentUser.telegramId}`
-);
+      `https://gram-quest-api.raheeumar9.workers.dev/api/task-progress/${currentUser.telegramId}`
+    );
 
-const progressData = await progressRes.json();
+    const progressData = await progressRes.json();
 
-setCompletedTasksCount(progressData.completed);
-setNotifications([]);
-  
+    setCompletedTasksCount(progressData.completed);
+
+
+    setNotifications([]);
+
+
     // Withdrawals
     const withdrawalsRes = await fetch(
-  `https://gram-quest-api.raheeumar9.workers.dev/api/withdrawals/${currentUser.telegramId}`
-);
+      `https://gram-quest-api.raheeumar9.workers.dev/api/withdrawals/${currentUser.telegramId}`
+    );
 
-const userWithdrawals = await withdrawalsRes.json();
+    const userWithdrawals = await withdrawalsRes.json();
 
-setWithdrawals(userWithdrawals);
+    setWithdrawals(userWithdrawals);
+
 
     // Referrals
     const refsRes = await fetch(
-  `https://gram-quest-api.raheeumar9.workers.dev/api/referrals/${currentUser.telegramId}`
-);
+      `https://gram-quest-api.raheeumar9.workers.dev/api/referrals/${currentUser.telegramId}`
+    );
 
-const userRefs = await refsRes.json();
+    const userRefs = await refsRes.json();
 
-setReferralsList(userRefs);
+    setReferralsList(userRefs);
+
 
     // Count verified refs in last 24h
     const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const verifiedLast24h = userRefs.filter(r => r.status === 'verified' && r.verifiedAt && new Date(r.verifiedAt) > last24h).length;
+
+    const verifiedLast24h = userRefs.filter(
+      r =>
+        r.status === 'verified' &&
+        r.verifiedAt &&
+        new Date(r.verifiedAt) > last24h
+    ).length;
+
     setDailyReferralCount(verifiedLast24h);
+
 
     // Spin History
     const historyRes = await fetch(
-  `https://gram-quest-api.raheeumar9.workers.dev/api/spin-history/${currentUser.telegramId}`
-);
+      `https://gram-quest-api.raheeumar9.workers.dev/api/spin-history/${currentUser.telegramId}`
+    );
 
-const history = await historyRes.json();
+    const history = await historyRes.json();
 
-setSpinHistory(history);
-
+    setSpinHistory(history);
     // Leaderboard
 setLeaderboardUsers([]);
 
