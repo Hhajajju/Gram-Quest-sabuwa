@@ -600,18 +600,14 @@ const res = await response.json();
   if (!settings) {
   return (
     <div className="p-5 text-white">
-      <h2>Gram Quest Loaded</h2>
-      <p>User: {currentUser?.telegramId}</p>
-
-      <button
-        onClick={() => refreshData()}
-        className="bg-blue-500 px-4 py-2 rounded mt-4"
-      >
-        Retry Loading Settings
-      </button>
+      Settings failed to load
+      <br />
+      User: {currentUser?.telegramId}
+      <br />
+      Check console
     </div>
   );
-  }
+    }
 
 return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0b0f19] text-white' : 'bg-gray-50 text-gray-900'} pb-24 font-sans transition-colors duration-300`}>
