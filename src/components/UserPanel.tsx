@@ -63,22 +63,24 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
 
 useEffect(() => {
 
-  const handleAdsgramComplete = async () => {
+  const handleReward = async (event: any) => {
+
+    const blockId = event.detail || "task-38672";
+
+    setIsVerifying(true);
 
     try {
-
-      setIsVerifying(true);
 
       const response = await fetch(
         "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
         {
-          method:"POST",
+          method: "POST",
           headers:{
             "Content-Type":"application/json"
           },
-          body:JSON.stringify({
+          body: JSON.stringify({
             telegramId: currentUser.telegramId,
-            blockId:"task-38672"
+            blockId: blockId
           })
         }
       );
@@ -91,12 +93,11 @@ useEffect(() => {
 
         alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
 
-        const updatedUser = await fetch(
+        const userRes = await fetch(
           `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
         );
 
-
-        const userData = await updatedUser.json();
+        const userData = await userRes.json();
 
         onUpdateUser(userData);
 
@@ -126,8 +127,8 @@ useEffect(() => {
   if(element){
 
     element.addEventListener(
-      "adsgram:complete",
-      handleAdsgramComplete
+      "reward",
+      handleReward
     );
 
   }
@@ -138,8 +139,8 @@ useEffect(() => {
     if(element){
 
       element.removeEventListener(
-        "adsgram:complete",
-        handleAdsgramComplete
+        "reward",
+        handleReward
       );
 
     }
@@ -148,7 +149,6 @@ useEffect(() => {
 
 
 }, [currentUser.telegramId, onUpdateUser]);
-
 
     
   // Spin Wheel States
