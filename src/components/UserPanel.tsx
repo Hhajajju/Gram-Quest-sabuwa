@@ -384,7 +384,46 @@ setLeaderboardUsers([]);
     }
   };
       
+const handleReward = async (event: any) => {
+  const blockId = event.detail || "task-38672";
 
+  setIsVerifying(true);
+
+  try {
+    const response = await fetch(
+      "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          telegramId: currentUser.telegramId,
+          blockId: blockId
+        })
+      }
+    );
+
+    const res = await response.json();
+
+    if (res.success) {
+      refreshData();
+
+      alert(
+        `🎉 Reward Confirmed! +${res.reward.toLocaleString()} Coins added to your balance.`
+      );
+
+    } else {
+      alert(res.message);
+    }
+
+  } catch (err) {
+    alert("Network error during backend verification.");
+
+  } finally {
+    setIsVerifying(false);
+  }
+};
 // 3. Claim 30 Task Daily Bonus
 const handleClaimDailyBonus = async () => {
   try {
