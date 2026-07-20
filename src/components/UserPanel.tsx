@@ -201,6 +201,7 @@ console.log("Settings response:", text);
 const appSettings = JSON.parse(text);
 
 setSettings(appSettings);
+    console.log("GETTING USER");
     // Reload user from Cloudflare D1 to get accurate balances
 const userRes = await fetch(
   `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
