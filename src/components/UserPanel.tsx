@@ -600,10 +600,7 @@ const res = await response.json();
       setWithdrawError(res.message);
     }
   };
-  if (!settings) {
-  return null;
-  }
-
+  
 return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0b0f19] text-white' : 'bg-gray-50 text-gray-900'} pb-24 font-sans transition-colors duration-300`}>
       
