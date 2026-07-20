@@ -63,91 +63,81 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
 
 useEffect(() => {
 
-  let adsgramElement: any;
-  let handleAdsgramComplete: any;
+  const handleAdsgramComplete = async () => {
 
-  const timer = setTimeout(() => {
+    try {
 
-    adsgramElement = adsgramRef.current;
+      setIsVerifying(true);
 
-    if (!adsgramElement) {
-      console.log("AdsGram element not ready");
-      return;
-    }
+      const response = await fetch(
+        "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            telegramId: currentUser.telegramId,
+            blockId:"task-38672"
+          })
+        }
+      );
 
 
-    handleAdsgramComplete = async () => {
+      const result = await response.json();
 
-      try {
 
-        setIsVerifying(true);
+      if(result.success){
 
-        const response = await fetch(
-          "https://gram-quest-api.raheeumar9.workers.dev/api/verify-adsgram-task",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              telegramId: currentUser.telegramId,
-              blockId: "task-38672"
-            })
-          }
+        alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
+
+        const updatedUser = await fetch(
+          `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
         );
 
 
-        const result = await response.json();
+        const userData = await updatedUser.json();
 
+        onUpdateUser(userData);
 
-        if (result.success) {
+      } else {
 
-          alert(`🎉 AdsGram completed! +${result.reward} Coins added.`);
-
-          const updatedUser = await fetch(
-            `https://gram-quest-api.raheeumar9.workers.dev/api/user/${currentUser.telegramId}`
-          );
-
-          const userData = await updatedUser.json();
-
-          onUpdateUser(userData);
-
-        } else {
-
-          alert(result.message);
-
-        }
-
-
-      } catch(error) {
-
-        console.error("AdsGram error:", error);
-
-      } finally {
-
-        setIsVerifying(false);
+        alert(result.message);
 
       }
 
-    };
+
+    } catch(error){
+
+      console.error("AdsGram error:", error);
+
+    } finally {
+
+      setIsVerifying(false);
+
+    }
+
+  };
 
 
-    adsgramElement.addEventListener(
+  const element = adsgramRef.current;
+
+
+  if(element){
+
+    element.addEventListener(
       "adsgram:complete",
       handleAdsgramComplete
     );
 
-
-  }, 1000);
+  }
 
 
   return () => {
 
-    clearTimeout(timer);
+    if(element){
 
-    if (adsgramElement && handleAdsgramComplete) {
-
-      adsgramElement.removeEventListener(
+      element.removeEventListener(
         "adsgram:complete",
         handleAdsgramComplete
       );
@@ -158,6 +148,8 @@ useEffect(() => {
 
 
 }, [currentUser.telegramId, onUpdateUser]);
+
+
     
   // Spin Wheel States
   const [isSpinning, setIsSpinning] = useState(false);
