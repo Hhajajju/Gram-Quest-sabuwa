@@ -230,20 +230,6 @@ const progressData = await progressRes.json();
 setCompletedTasksCount(progressData.completed);
 setNotifications([]);
   
-
-    const settingsRes = await fetch(
-      "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
-    );
-
-    console.log("SETTINGS RESPONSE STATUS:", settingsRes.status);
-
-    const appSettings = await settingsRes.json();
-
-    console.log("SETTINGS DATA:", appSettings);
-
-    setSettings(appSettings);
-
-    console.log("SETTINGS SAVED");
     // Withdrawals
     const withdrawalsRes = await fetch(
   `https://gram-quest-api.raheeumar9.workers.dev/api/withdrawals/${currentUser.telegramId}`
