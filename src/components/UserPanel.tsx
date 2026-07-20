@@ -431,22 +431,60 @@ const res = await response.json();
     }
   };
 
-  const handleClaimSpinReward = () => {
-    if (claimableSpinReward === null) return;
-    if (!isSpinAdCompleted) {
-      alert("Please watch the advertisement to unlock your winnings first.");
-      return;
+  const handleClaimSpinReward = async () => {
+  if (claimableSpinReward === null) return;
+
+  if (!isSpinAdCompleted) {
+    alert("Please watch the advertisement to unlock your winnings first.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      "https://gram-quest-api.raheeumar9.workers.dev/api/claim-spin-reward",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          telegramId: currentUser.telegramId,
+          reward: claimableSpinReward
+        })
+      }
+    );
+
+    const res = await response.json();
+
+    if (res.success) {
+
+      onUpdateUser(res.user);
+
+      const wonReward = claimableSpinReward;
+
+      setClaimableSpinReward(null);
+      setSpinResult(null);
+      setSpinAngle(0);
+      setIsSpinAdCompleted(false);
+
+      refreshData();
+
+      alert(
+        `🎉 Successfully claimed ${wonReward.toLocaleString()} Coins! Your balance has been updated.`
+      );
+
+    } else {
+
+      alert(res.message);
+
     }
-    
-    GramQuestDB.claimSpinReward(currentUser.telegramId, claimableSpinReward);
-    const wonReward = claimableSpinReward;
-    setClaimableSpinReward(null);
-    setSpinResult(null);
-    setSpinAngle(0);
-    setIsSpinAdCompleted(false);
-    refreshData();
-    alert(`🎉 Successfully claimed ${wonReward.toLocaleString()} Coins! Your balance has been updated immediately.`);
-  };
+
+  } catch (error) {
+
+    alert("Failed to claim spin reward.");
+
+  }
+};
 
   // 5. Convert Coins
   const handleConvertCoins = async (e: React.FormEvent) => {
