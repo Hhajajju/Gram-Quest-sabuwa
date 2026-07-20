@@ -507,7 +507,7 @@ const res = await response.json();
   };
 
   // 5. Convert Coins
-  const handleConvertCoins = (e: React.FormEvent) => {
+  const handleConvertCoins = async (e: React.FormEvent) => {
     e.preventDefault();
     setConversionError('');
     setConversionSuccess('');
