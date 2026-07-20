@@ -543,7 +543,7 @@ const res = await response.json();
   };
 
   // 6. Request Withdrawal
-  const handleRequestWithdrawal = (e: React.FormEvent) => {
+   const handleRequestWithdrawal = async (e: React.FormEvent) => {
     e.preventDefault();
     setWithdrawError('');
     setWithdrawSuccess('');
