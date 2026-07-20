@@ -42,7 +42,18 @@ export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps)
   const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'spin' | 'friends' | 'wallet' | 'ranks'>('home');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<BotNotification[]>([]);
-  const [settings, setSettings] = useState<AppSettings | null>(null);
+  const [settings, setSettings] = useState<AppSettings>({
+  botUsername: '',
+  supportUsername: '',
+  adsgramDailyLimit: 30,
+  adsgramReward: 3000,
+  conversionRate: 1000000,
+  minConversion: 50000,
+  maxConversion: 100000000,
+  minWithdrawal: 0.5,
+  maxWithdrawal: 2,
+  withdrawalFee: 10
+});
   const [tasks, setTasks] = useState<Task[]>([]);
   const [completedTasksCount, setCompletedTasksCount] = useState(0);
   const [copiedLink, setCopiedLink] = useState(false);
