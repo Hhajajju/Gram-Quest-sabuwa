@@ -591,6 +591,8 @@ if (!settings) {
   return (
     <div className="p-5 text-white">
       Loading settings...
+      <br />
+      User: {currentUser?.telegramId}
     </div>
   );
                    }
