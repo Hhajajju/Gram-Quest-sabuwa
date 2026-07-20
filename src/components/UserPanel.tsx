@@ -431,7 +431,7 @@ const res = await response.json();
     }
   };
 
-  const handleClaimSpinReward = async () => {
+const handleClaimSpinReward = () => {
   if (claimableSpinReward === null) return;
 
   if (!isSpinAdCompleted) {
@@ -439,51 +439,18 @@ const res = await response.json();
     return;
   }
 
-  try {
-    const response = await fetch(
-      "https://gram-quest-api.raheeumar9.workers.dev/api/claim-spin-reward",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          telegramId: currentUser.telegramId,
-          reward: claimableSpinReward
-        })
-      }
-    );
+  const wonReward = claimableSpinReward;
 
-    const res = await response.json();
+  setClaimableSpinReward(null);
+  setSpinResult(null);
+  setSpinAngle(0);
+  setIsSpinAdCompleted(false);
 
-    if (res.success) {
+  refreshData();
 
-      onUpdateUser(res.user);
-
-      const wonReward = claimableSpinReward;
-
-      setClaimableSpinReward(null);
-      setSpinResult(null);
-      setSpinAngle(0);
-      setIsSpinAdCompleted(false);
-
-      refreshData();
-
-      alert(
-        `🎉 Successfully claimed ${wonReward.toLocaleString()} Coins! Your balance has been updated.`
-      );
-
-    } else {
-
-      alert(res.message);
-
-    }
-
-  } catch (error) {
-
-    alert("Failed to claim spin reward.");
-
-  }
+  alert(
+    `🎉 Successfully claimed ${wonReward.toLocaleString()} Coins! Your balance has been updated.`
+  );
 };
 
   // 5. Convert Coins
