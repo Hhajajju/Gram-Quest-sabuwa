@@ -174,26 +174,15 @@ useEffect(() => {
 
   // Load initial data for user
   useEffect(() => {
-    refreshData();
-    // Countdown timer for 30 days
-    const timer = setInterval(() => {
-      setCountdown(prev => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        } else if (prev.days > 0) {
-          return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        } else {
-          return { days: 30, hours: 0, minutes: 0, seconds: 0 }; // reset
-        }
-      });
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }, [currentUser.telegramId, activeTab]);
+  console.log("UserPanel mounted");
+
+  refreshData().catch((error) => {
+    console.error("RefreshData crashed:", error);
+    alert("RefreshData crashed: " + error.message);
+  });
+
+}, [currentUser.telegramId, activeTab]);
 
   const refreshData = async () => {
   try {
