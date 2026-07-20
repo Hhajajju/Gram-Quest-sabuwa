@@ -269,7 +269,7 @@ setSpinHistory(history);
     // Leaderboard
 setLeaderboardUsers([]);
 
-  } catch (error) {
+  } catch (error: any) {
   console.error("Refresh data failed:", error);
   alert("Refresh data failed: " + error.message);
   }
