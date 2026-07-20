@@ -229,10 +229,7 @@ const progressData = await progressRes.json();
 
 setCompletedTasksCount(progressData.completed);
 setNotifications([]);
-    const refreshData = async () => {
-  try {
-
-    console.log("REFRESH START");
+  
 
     const settingsRes = await fetch(
       "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
