@@ -601,16 +601,8 @@ const res = await response.json();
     }
   };
   if (!settings) {
-  return (
-    <div className="p-5 text-white">
-      Settings failed to load
-      <br />
-      User: {currentUser?.telegramId}
-      <br />
-      Check console
-    </div>
-  );
-    }
+  return null;
+  }
 
 return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0b0f19] text-white' : 'bg-gray-50 text-gray-900'} pb-24 font-sans transition-colors duration-300`}>
