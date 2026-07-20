@@ -32,6 +32,8 @@ interface UserPanelProps {
 }
 
 export default function UserPanel({ currentUser, onUpdateUser }: UserPanelProps) {
+
+  console.log("UserPanel rendering", currentUser);
   const [activeTab, setActiveTab] = useState<'home' | 'tasks' | 'spin' | 'friends' | 'wallet' | 'ranks'>('home');
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<BotNotification[]>([]);
