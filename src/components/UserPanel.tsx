@@ -424,7 +424,7 @@ const handleClaimDailyBonus = async () => {
 };
 
   // 4. Spin Wheel Animation
-  const handleSpinWheel = () => {
+  const handleSpinWheel = async () => {
     if (isSpinning) return;
     setIsSpinning(true);
     setClaimableSpinReward(null);
