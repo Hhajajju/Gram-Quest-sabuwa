@@ -192,9 +192,13 @@ useEffect(() => {
   "https://gram-quest-api.raheeumar9.workers.dev/api/settings"
 );
 
-const appSettings = await settingsRes.json();
+console.log("Settings HTTP:", settingsRes.status);
 
-console.log("SETTINGS FROM CLOUDFLARE:", appSettings);
+const text = await settingsRes.text();
+
+console.log("Settings response:", text);
+
+const appSettings = JSON.parse(text);
 
 setSettings(appSettings);
     // Reload user from Cloudflare D1 to get accurate balances
